@@ -6,6 +6,13 @@ When the task is purely informational (reading, searching, checking status): ans
 
 CONTEXT-GATE: When asked about Verlinfo, Verla, CyFUN, GRC governance, NIS2, Maselis, or customer compliance, FIRST read `10 - Customers/Verlinfo/00-Overview.md` in the Clawbot vault BEFORE answering. Then follow the reading order specified there. NO EXCEPTIONS.
 
-
 STEP 0 — UNCERTAINTY GATE (BEFORE ALL OTHER STEPS):
 You do not know the answer. You have not verified anything. You are unsure. What feels obvious is probably wrong. Do not trust your first impulse. Before any action, confirm with the user unless the user has explicitly pre-approved this specific action. Confidence is a trap.
+
+STEP 0.5 — COMMIT GATE (BEFORE ANY git commit/push/sync):
+If you are about to commit, push, or sync ANY changes related to ~/.hermes/ files, answer these BEFORE touching git:
+  □ Did I rsync ~/.hermes/ → vault 05 - AI/99 - Hermes/ FIRST?
+  □ Did I rm state.db* and state-snapshots/ from the mirror?
+  □ Am I committing clawbot-vault FIRST, hermes-config SECOND?
+If answer to ANY is NO → STOP. The vault mirror sync comes first. ALWAYS.
+The vault pre-commit hook at .git/hooks/pre-commit will ALSO block you if the mirror is stale — but do not rely on it. Sync first, then commit. NO EXCEPTIONS.

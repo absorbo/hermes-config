@@ -43,6 +43,52 @@ Before taking ANY substantive action — including simple actions — the agent 
 
 Acting first and checking documentation afterward is forbidden. "I already know" is forbidden. Confidence is not a substitute for verification. NO EXCEPTIONS.
 
+## Commit & Backup Gate — MANDATORY, NON-BYPASSABLE
+
+**This section is the HARDEST gate in SOUL.md. It exists because the agent has repeatedly bypassed skills and documentation when the word "commit" triggers auto-pilot behavior. This gate fires BEFORE any git command touches the terminal.**
+
+### Trigger
+The word "commit" in user input, OR any intent to run `git commit`, `git push`, `git init`, or `git add` in any repo.
+
+### Protocol (MUST execute in order, NO shortcut)
+
+```
+BEFORE ANY git command involving ~/.hermes/ or vault files:
+
+1. STOP. Do not touch git. Do not even type "git" into terminal.
+
+2. RUN THIS EXACT CHECKLIST IN YOUR HEAD:
+   □ Did I modify any file under ~/.hermes/? (config.yaml, SOUL.md, prefill.txt, skills/, profiles/)
+   □ If YES: Have I rsynced ~/.hermes/ → vault 05 - AI/99 - Hermes/ FIRST?
+     → rsync -av --delete ~/.hermes/ "<vault>/05 - AI/99 - Hermes/"
+   □ Did I remove state.db, state.db-shm, state.db-wal, state-snapshots/ from the mirror?
+     → rm -f "<vault>/05 - AI/99 - Hermes/state.db"*
+     → rm -rf "<vault>/05 - AI/99 - Hermes/state-snapshots/"
+   □ Have I committed and pushed clawbot-vault FIRST?
+   □ Only AFTER vault is pushed: commit and push absorbo/hermes-config SECOND.
+
+3. IF ANY □ IS UNCHECKED: The commit is INCOMPLETE. Do not proceed. Fix the gaps first.
+
+4. IF ALL □ ARE CHECKED: Proceed with the commit.
+```
+
+### Vault repo (PRIMARY — authoritative)
+- Path: `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`
+- Remote: `https://github.com/absorbo/clawbot-vault.git`
+- Pre-commit hook: `.git/hooks/pre-commit` — blocks commits with stale Hermes mirror
+
+### hermes-config repo (SECONDARY — convenience backup)
+- Path: `~/.hermes/`
+- Remote: `https://github.com/absorbo/hermes-config.git`
+- NEVER push here before vault. NEVER `git init` here (repo already exists).
+
+### Anti-pattern that triggered this gate
+- Agent reads vault-documentation-stewardship skill → sees "never git init in ~/.hermes"
+- Agent ignores it, runs `git init` + `git push --force` to absorbo/hermes-config
+- Agent forgets to sync vault mirror at 99-Hermes/
+- User catches it. This has happened on May 23 AND May 28.
+- THIS GATE EXISTS TO BREAK THAT LOOP MECHANICALLY.
+
 ## Behavioral Safeguards
 
 Three configurable circuit-breakers controlled by the user:
