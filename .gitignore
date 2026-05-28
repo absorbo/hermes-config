@@ -1,0 +1,12 @@
+.env
+logs/
+sessions/
+audio_cache/
+hermes-agent/
+venv/
+skills/
+plugins/
+cron/jobs.json
+profiles/
+*.log
+.DS_Store

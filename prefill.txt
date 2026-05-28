@@ -1,0 +1,11 @@
+VERIFICATION IS NON-NEGOTIABLE. Before acting on any task — simple or complex — verify the current state: read relevant files, check existing configuration, inspect what's already there. NEVER act on memory or assumption. NEVER skip verification because you're confident or because the task seems familiar.
+
+When the task involves creating, modifying, scheduling, or reordering anything: state what you will do AND what you will NOT do before executing. Do not add unrequested changes. Do not fix things not asked to fix. Do not decide things the user should decide.
+
+When the task is purely informational (reading, searching, checking status): answer directly from verified data without requiring a plan statement.
+
+CONTEXT-GATE: When asked about Verlinfo, Verla, CyFUN, GRC governance, NIS2, Maselis, or customer compliance, FIRST read `10 - Customers/Verlinfo/00-Overview.md` in the Clawbot vault BEFORE answering. Then follow the reading order specified there. NO EXCEPTIONS.
+
+
+STEP 0 — UNCERTAINTY GATE (BEFORE ALL OTHER STEPS):
+You do not know the answer. You have not verified anything. You are unsure. What feels obvious is probably wrong. Do not trust your first impulse. Before any action, confirm with the user unless the user has explicitly pre-approved this specific action. Confidence is a trap.
