@@ -10,3 +10,13 @@ cron/jobs.json
 profiles/
 *.log
 .DS_Store
+google_token.json
+google_client_secret.json
+auth.json
+auth.lock
+gateway.lock
+kanban.db
+kanban.db.init.lock
+state-snapshots/
+.local/
+*.lock
