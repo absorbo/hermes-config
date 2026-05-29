@@ -1,0 +1,355 @@
+{
+  "jobs": [
+    {
+      "id": "b264e586aa4d",
+      "name": "GraphWeaver \u2014 MOC Integrity Audit",
+      "prompt": "Run the GraphWeaver MOC integrity audit for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Find all MOC files (`* MOC.md`, `* Overview.md`) in the vault.\n2. Verify every Obsidian wikilink resolves to an existing note.\n3. Report broken links, orphaned MOCs, and cross-reference gaps.\n4. Repair structural issues only where the target note clearly exists under a slightly different name.\n5. Do NOT make speculative edits.\n6. Do NOT modify template files (`90 - Templates`) or archive files (`99 - Archive`).\n7. Output an audit report: total MOCs checked, total links checked, broken links found, repaired count, remaining issues.\n\nConstraints: never delete files; never assume; use evidence from the filesystem only.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 3 * * *",
+        "display": "0 3 * * *"
+      },
+      "schedule_display": "0 3 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:04:57.939236+02:00",
+      "next_run_at": "2026-05-18T03:00:00+02:00",
+      "last_run_at": "2026-05-17T03:09:44.020822+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "0367b795f472",
+      "name": "Eisenhower Task Prioritizer",
+      "prompt": "Prioritize unprioritized `#task` items in the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Use file tools only to find unprioritized `#task` items with no priority signifier: \ud83d\udd3a \u23eb \ud83d\udd3c \ud83d\udd3d \u23ec\ufe0f.\n2. Exclude files under `90 - Templates`, `99 - Archive`, `.obsidian`, `.trash`, and `Actieplan CyFUN compliance.md`.\n3. Read 5-10 lines of surrounding context for each task.\n4. Apply this logic:\n   - Deadline within 48h \u2192 \ud83d\udd3a Q1. Within 7d \u2192 \u23eb or \ud83d\udd3a depending on urgency.\n   - Compliance/audit/security folders \u2192 \u23eb Q2.\n   - Keywords `fix/broken/outage/incident/escalation/deadline/today` \u2192 \ud83d\udd3a.\n   - Keywords `plan/strategy/improve/build/audit/compliance` \u2192 \u23eb.\n   - Keywords `update/check/review/send/coordinate` \u2192 \ud83d\udd3c.\n   - Keywords `consider/maybe/someday` \u2192 \ud83d\udd3d.\n   - 30+ days open with no date \u2192 \ud83d\udd3d.\n   - Doubt \u2192 choose LOWER priority.\n5. Patch the task line to insert the signifier after the description and before any \ud83d\udcc5 date.\n6. Process all unprioritized tasks found.\n7. Report total processed and counts: Q1, Q2, Q3, Q4.\n\nConstraints: never delete files; never modify templates or archives; never fabricate context.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 5 * * *",
+        "display": "0 5 * * *"
+      },
+      "schedule_display": "0 5 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:04:58.949707+02:00",
+      "next_run_at": "2026-05-18T05:00:00+02:00",
+      "last_run_at": "2026-05-17T05:07:57.497432+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "file",
+        "skills"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "7cfde4ccf71b",
+      "name": "Morning Briefing \u2014 Email + Daily Note",
+      "prompt": "Create the daily Morning Briefing for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nImportant paths:\n- Daily note: `01 - Daily Notes/YYYY-MM-DD.md` for today's local date.\n- Daily note template: `90 - Templates/Daily Note.md`.\n- Gmail script: `/Users/absorbo/.hermes/skills/productivity/google-workspace/scripts/google_api.py`.\n- M365 script: `/Users/absorbo/.hermes/skills/productivity/m365-graph/scripts/m365_graph_mail.py`.\n- Python: `/Users/absorbo/.hermes/hermes-agent/venv/bin/python3`.\n\nTasks:\n1. Create today's daily note from the template if it does not exist. Substitute template placeholders with actual values; do not write literal `{{...}}` placeholders.\n2. Fetch unread Gmail with query `is:unread`, max 30.\n3. Fetch unread M365 mail by listing recent inbox messages and filtering `isRead == false`, max 30. If M365 search is unavailable, use list + Python filtering.\n4. Email resilience: if Gmail fails, continue with M365. If M365 fails, continue with Gmail. If both fail, write that email is unavailable.\n5. Triage emails into: \ud83d\udd3a Action Required, \u23eb Important, \ud83d\udd3c FYI, \ud83d\udd3d Ignored.\n6. For \ud83d\udd3a and \u23eb emails, read full message/thread where safe and cross-reference vault for customer/project context.\n7. Write briefing only inside the `## \ud83d\udcec Morning Briefing` section of today's daily note.\n8. Draft reply text in the note when useful, but do not send any email.\n\nHard constraints:\n- \u26d4 NEVER delete email. EVER. No exceptions. Not trash, not deleted items.\n- \u26d4 NEVER send email. Draft text only.\n- \u26d4 NEVER modify email labels, read state, folders, or metadata.\n- \u26d4 NEVER assume context; use `[CONFIRM: ...]` placeholders for uncertainty.\n- \u26d4 NEVER modify content outside `## \ud83d\udcec Morning Briefing`.\n- \u26d4 NEVER modify templates or archives.\n\nFinal output: short status summary with counts, failures, and daily note path.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown",
+        "google-workspace",
+        "m365-graph"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * *",
+        "display": "0 4 * * *"
+      },
+      "schedule_display": "0 4 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:04:59.961987+02:00",
+      "next_run_at": "2026-05-18T04:00:00+02:00",
+      "last_run_at": "2026-05-17T04:04:22.891019+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills",
+        "web"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "7a4e2eab7e53",
+      "name": "Monthly Invoice Preparation",
+      "prompt": "Run the monthly invoice preparation workflow for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Determine whether today is the second-to-last working day of the month, excluding weekends and Belgian holidays.\n2. Belgian holidays 2026: 2026-01-01, 2026-04-06, 2026-05-01, 2026-05-14, 2026-05-25, 2026-07-21, 2026-08-15, 2026-11-01, 2026-11-11, 2026-12-25.\n3. If today is NOT invoice day, stop immediately and report `Not invoice day. Next: [date]`.\n4. If today IS invoice day, aggregate the entire month's `## \ud83d\udccb Timesheet` sections from all daily notes.\n5. Create `01 - Daily Notes/YYYY-MM-Invoice.md` with per-customer totals, rates, and amounts.\n6. Flag all `[ESTIMATE]` hours as unresolved.\n7. Draft submission email text in the invoice note only. Never send email.\n8. Remind user: submit before noon, payment by last working day.\n\nCustomer map:\n- Delvaux \u2192 Minotaur Solutions \u2192 OnePoint\n- CAPAC-HVW \u2192 Futurwork \u2192 Futurwork\n- Futurwork Direct \u2192 Futurwork (direct) \u2192 Futurwork\n- Groep Brugge \u2192 Inetum \u2192 Inetum\n- Inetum Direct \u2192 Inetum (direct) \u2192 Inetum\n- Verlinfo/Verla \u2192 Xcellerate \u2192 Xcellerate\n\nHard constraints: never delete email; never send email; never delete files; never modify templates or archives; never fabricate amounts; use `[CONFIRM]` for uncertainty.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "display": "0 9 * * *"
+      },
+      "schedule_display": "0 9 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:05:18.765381+02:00",
+      "next_run_at": "2026-05-17T09:00:00+02:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "e4010278f409",
+      "name": "Weekly Timesheet Rollup",
+      "prompt": "Create the weekly timesheet rollup for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Find Monday-Friday daily notes for the current week.\n2. Extract `## \ud83d\udccb Timesheet` table rows from each day.\n3. Aggregate per customer: sum hours and collect work descriptions.\n4. Create `01 - Daily Notes/YYYY-Www.md` using the format from `90 - Templates/Timesheet-Weekly.md`.\n5. Flag gaps: zero-hour customers, zero-hour days, unresolved `[ESTIMATE]` entries.\n6. Report: number of customers, total hours, logged/missing customers.\n\nConstraints: never delete files; never modify templates or archives; never fabricate hours; preserve `[ESTIMATE]`/`[CONFIRM]` uncertainty markers.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 15 * * 5",
+        "display": "0 15 * * 5"
+      },
+      "schedule_display": "0 15 * * 5",
+      "repeat": {
+        "times": null,
+        "completed": 0
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:05:19.771058+02:00",
+      "next_run_at": "2026-05-22T15:00:00+02:00",
+      "last_run_at": null,
+      "last_status": null,
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "4d1be69dd3f7",
+      "name": "Backlink Curator",
+      "prompt": "Run the Clawbot workflow backlink curator using the configured script wrapper. This job is script-only and should report the wrapper output. The old launchd job `com.clawbot.workflow-backlink-curator` has been disabled to avoid duplicate runs.",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": "workflow_backlink_curator_cron.sh",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "20 6 * * *",
+        "display": "20 6 * * *"
+      },
+      "schedule_display": "20 6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:05:44.015404+02:00",
+      "next_run_at": "2026-05-18T06:20:00+02:00",
+      "last_run_at": "2026-05-17T06:20:16.623232+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "924256021e15",
+      "name": "Evening Timesheet Pre-Fill",
+      "prompt": "Pre-fill today's timesheet for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Read today's daily note context: Morning Briefing, meeting notes, completed tasks.\n2. Find today's meeting notes by date.\n3. Estimate hours per customer with activity:\n   - Meeting duration \u2192 direct hours; 1h meeting is at least 1h to log.\n   - Completed tasks \u2192 estimate based on task type.\n   - Email activity \u2192 estimate follow-up time.\n   - Delvaux standup days \u2192 0.25-0.5h minimum.\n4. Pre-fill only the `## \ud83d\udccb Timesheet` section with columns: Customer | Intermediary | Submit to | Hours | Work Description | Confidence.\n5. Mark estimates with `[ESTIMATE]` so user reviews and removes tag.\n6. Compute running weekly totals from existing daily notes.\n7. Flag uncertainties with `[CONFIRM: ...]`.\n8. Output summary: customers, total hours, count `[ESTIMATE]`, count confirmed.\n\nCustomer map:\n- Delvaux \u2192 Minotaur Solutions \u2192 OnePoint\n- CAPAC-HVW \u2192 Futurwork \u2192 Futurwork\n- Futurwork Direct \u2192 Futurwork (direct) \u2192 Futurwork\n- Groep Brugge \u2192 Inetum \u2192 Inetum\n- Inetum Direct \u2192 Inetum (direct) \u2192 Inetum\n- Verlinfo/Verla \u2192 Xcellerate \u2192 Xcellerate\n- Pecco \u2192 Direct \u2192 Direct\n- Reat-Capital \u2192 Direct \u2192 Direct\n- Recytrans \u2192 Direct \u2192 Direct\n\nConstraints: never delete files; never modify templates or archives; never fabricate; never write outside `## \ud83d\udccb Timesheet`.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 17 * * *",
+        "display": "0 17 * * *"
+      },
+      "schedule_display": "0 17 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:05:45.022995+02:00",
+      "next_run_at": "2026-05-17T17:00:00+02:00",
+      "last_run_at": "2026-05-16T17:07:27.714434+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills"
+      ],
+      "workdir": null
+    },
+    {
+      "id": "298f69225172",
+      "name": "JIRA Update Pre-Fill",
+      "prompt": "Draft today's Delvaux JIRA update section in the Clawbot Obsidian daily note at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Check day-of-week gating: Wednesday \u2192 SKIP; weekend \u2192 SKIP; Belgian holiday \u2192 SKIP.\n2. Belgian holidays 2026: 2026-01-01, 2026-04-06, 2026-05-01, 2026-05-14, 2026-05-25, 2026-07-21, 2026-08-15, 2026-11-01, 2026-11-11, 2026-12-25.\n3. If update day, read `10 - Customers/Delvaux/JIRA-Update-Ritual.md` for the template/ritual.\n4. Gather today's Delvaux context: Morning Briefing emails, `## \ud83d\udccb Timesheet` hours, meeting notes.\n5. Draft only the `## \ud83c\udfab JIRA Update` section in today's daily note with: Date, Status, What was done, What is planned next, Blockers/Risks, Hours.\n6. Flag uncertainties using `[CONFIRM: ...]`.\n\nHard constraints:\n- \u26d4 Never connect to JIRA API.\n- \u26d4 Never fabricate content.\n- \u26d4 Never write outside `## \ud83c\udfab JIRA Update`.\n- \u26d4 Never delete files; never modify templates or archives.",
+      "skills": [
+        "obsidian",
+        "obsidian-markdown"
+      ],
+      "skill": "obsidian",
+      "model": null,
+      "provider": null,
+      "base_url": null,
+      "script": null,
+      "no_agent": false,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "15 17 * * *",
+        "display": "15 17 * * *"
+      },
+      "schedule_display": "15 17 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 1
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-05-16T11:05:46.029675+02:00",
+      "next_run_at": "2026-05-17T17:15:00+02:00",
+      "last_run_at": "2026-05-16T17:15:43.108814+02:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "local",
+      "origin": null,
+      "enabled_toolsets": [
+        "terminal",
+        "file",
+        "skills",
+        "web"
+      ],
+      "workdir": null
+    }
+  ],
+  "updated_at": "2026-05-17T06:20:16.623476+02:00"
+}
