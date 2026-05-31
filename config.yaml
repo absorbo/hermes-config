@@ -9,7 +9,7 @@ fallback_providers:
 - provider: minimax-direct
   model: MiniMax-M2.7
   base_url: https://api.minimax.io/v1
-  api_key: 0u0xGEcd_oacR9yPzloltDBVPXKKyx5_2BjR55pzqRQ
+  api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
 - provider: freellmapi
   model: auto
   base_url: http://localhost:3001/v1
@@ -570,7 +570,7 @@ custom_providers:
   model: moonshotai/kimi-k2.6
 - name: minimax-direct
   base_url: https://api.minimax.io/v1
-  api_key: 0u0xGEcd_oacR9yPzloltDBVPXKKyx5_2BjR55pzqRQ
+  api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
   model: MiniMax-M2.7
 - name: deepseek-direct
   base_url: https://api.deepseek.com/v1
