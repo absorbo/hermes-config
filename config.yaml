@@ -19,9 +19,10 @@ fallback_providers:
   base_url: https://api.deepseek.com/v1
   api_key: sk-f02e65d5be14486383e84194241aee47
 - provider: fatman:11434
-  model: qwen3.6:35b-a3b-coding-bf16
+  model: qwen3.6:27b-mxfp8
   base_url: http://fatman:11434/v1
   api_key: ollama
+  timeout: 300
 credential_pool_strategies: {}
 toolsets:
 - hermes-cli
@@ -578,7 +579,7 @@ custom_providers:
 - name: fatman:11434
   base_url: http://fatman:11434/v1
   api_key: ollama
-  model: qwen3.6:35b-a3b-coding-bf16
+  model: qwen3.6:27b-mxfp8
 - name: freellmapi
   base_url: http://localhost:3001/v1
   api_key: freellmapi-26ecac0ac1285650d9860c9727614d11c4d8550b8317b22c
