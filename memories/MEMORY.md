@@ -2,7 +2,7 @@ Vault: Clawbot at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Do
 §
 Email: ⛔ NEVER DELETE (ever, no exceptions — trash, deleted items, himalaya, m365-graph, google-workspace). ⛔ NEVER SEND. Draft replies only, in Maarten's writing style (learned from sent items), covering last 3 days unanswered. Replies must be genuinely helpful (decisions, growth, time), not pro-forma. This is non-negotiable for ALL email-related skills.
 §
-Hermes: 5-tier kimi→minimax→deepseek→freellmapi(:3001)→qwen3.6. ⛔CW EXHAUSTED May28, deepseek ~Jun25. ⛔COMMIT GATE: (1)rsync→vault FIRST (2)rm state.db* (3)push vault (4)push hermes-config. Gate in SOUL.md+prefill+skill+hook. Agent bypassed May23+May28 — NEVER AGAIN.
+Hermes: 5-tier kimi→minimax-m2.7→freellmapi(:3001)→deepseek→qwen3.6:27b-mxfp8 (fatman timeout=300s). ⛔CW EXHAUSTED May28, deepseek ~Jun25. ⛔COMMIT GATE: (1)rsync→vault FIRST (2)rm state.db* (3)push vault (4)push hermes-config. Gate in SOUL.md+prefill+skill+hook. Agent bypassed May23+May28 — NEVER AGAIN.
 §
 CRITICAL: security.redact_secrets=true masks API keys with `...` or `***` in ALL tool output. This is output-level masking — actual files have full keys. NEVER conclude a key is truncated/broken from redacted output. Always verify at byte level. Also: NEVER redact, strip, or replace user-authored content in vault notes; NEVER change model.default/provider/fallback order in config.yaml without explicit user instruction.
 §
