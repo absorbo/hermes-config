@@ -5,7 +5,7 @@ model:
 providers: {}
 custom_providers: []
 fallback_providers:
-- provider: novita
+- provider: kimi-coding
   model: moonshotai/kimi-k2.6
 - provider: freellmapi
   model: auto

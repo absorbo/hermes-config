@@ -6,8 +6,9 @@ Use this for: switching primary model/provider, adding/removing/reordering fallb
 
 - Active profiles: `default`, `grcexpert`, `maartenwriter`.
 - Removed profiles: `codereviewer`, `expertcoder`.
-- All three profiles use `minimax-direct` / `MiniMax-M3` as primary.
-- Current recurring provider plugins: `minimax-direct`, `novita`, `freellmapi`, `fatman-ollama`.
+- `default` and `grcexpert` primary: `minimax-direct` / `MiniMax-M3`.
+- `maartenwriter` primary: `kimi-coding` / `moonshotai/kimi-k2.6`.
+- Current recurring provider plugins: `minimax-direct`, `kimi-coding`, `freellmapi`, `fatman-ollama`. Novita has been removed from the chain.
 - Current policy: recurring custom endpoints use provider plugins and env-var credential resolution; do not reintroduce inline secret-bearing `custom_providers` blocks.
 
 ## Phase 0 — Plan-first gate

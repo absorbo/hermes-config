@@ -4,7 +4,7 @@ model:
   context_length: 256000
 providers: {}
 fallback_providers:
-- provider: novita
+- provider: kimi-coding
   model: moonshotai/kimi-k2.6
 - provider: freellmapi
   model: auto

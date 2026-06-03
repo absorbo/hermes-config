@@ -1,11 +1,11 @@
 model:
-  default: MiniMax-M3
-  provider: minimax-direct
+  default: moonshotai/kimi-k2.6
+  provider: kimi-coding
   context_length: 256000
 providers: {}
 fallback_providers:
-- provider: novita
-  model: moonshotai/kimi-k2.6
+- provider: minimax-direct
+  model: MiniMax-M3
 - provider: freellmapi
   model: auto
 - provider: fatman-ollama
