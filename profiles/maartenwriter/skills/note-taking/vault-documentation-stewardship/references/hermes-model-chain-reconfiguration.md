@@ -6,8 +6,7 @@ Use this for: switching primary model/provider, adding/removing/reordering fallb
 
 - Active profiles: `default`, `grcexpert`, `maartenwriter`.
 - Removed profiles: `codereviewer`, `expertcoder`.
-- Default primary: `openai-codex` / `gpt-5.5`.
-- Specialist primary: `minimax-direct` / `MiniMax-M3`.
+- All three profiles use `minimax-direct` / `MiniMax-M3` as primary.
 - Current recurring provider plugins: `minimax-direct`, `novita`, `freellmapi`, `fatman-ollama`.
 - Current policy: recurring custom endpoints use provider plugins and env-var credential resolution; do not reintroduce inline secret-bearing `custom_providers` blocks.
 
@@ -113,22 +112,24 @@ Expected doctor note: `⚠ OpenRouter API (not configured)` may remain because t
 
 Commit gate order is mandatory:
 
-1. Rsync live Hermes to vault mirror with runtime exclusions.
-2. Remove runtime artifacts from mirror.
-3. Commit/push `clawbot-vault` first.
-4. Commit/push `hermes-config` second.
-
-Recommended rsync:
+1. Rsync live Hermes to vault mirror:
 
 ```bash
-rsync -av --delete \
-  --exclude 'state.db' --exclude 'state.db-*' --exclude 'state-snapshots/' \
-  --exclude 'pastes/' --exclude 'node_modules/' --exclude '__pycache__/' --exclude '*.pyc' \
-  ~/.hermes/ "$VAULT/05 - AI/99 - Hermes/"
+rsync -av --delete ~/.hermes/ "$VAULT/05 - AI/99 - Hermes/"
 ```
 
-Remember: `profiles/`, `plugins/`, and `skills/` may be ignored. Use explicit `git add -f` for intended files.
+2. Remove runtime artifacts from mirror (the vault pre-commit hook blocks these, but clean them explicitly):
 
-## Phase 6 — Report artifacts separately
+```bash
+rm -f "$VAULT/05 - AI/99 - Hermes/state.db"*
+rm -rf "$VAULT/05 - AI/99 - Hermes/state-snapshots"
+rm -rf "$VAULT/05 - AI/99 - Hermes/pastes"
+rm -rf "$VAULT/05 - AI/99 - Hermes/node_modules"
+find "$VAULT/05 - AI/99 - Hermes" -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null
+find "$VAULT/05 - AI/99 - Hermes" -name '*.pyc' -delete 2>/dev/null
+```
+
+3. Commit/push `clawbot-vault` first.
+4. Commit/push `hermes-config` second.
 
 If searches find stale references only in historical plans, backups, cron outputs, session JSON, upstream Hermes Agent docs/tests, or auth/cache artifacts, list them separately as artifacts for user review. Do not silently rewrite historical/user-authored artifacts unless explicitly requested.

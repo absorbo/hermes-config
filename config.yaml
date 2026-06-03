@@ -1,12 +1,9 @@
 model:
-  default: gpt-5.5
-  provider: openai-codex
-  base_url: https://chatgpt.com/backend-api/codex
+  default: MiniMax-M3
+  provider: minimax-direct
   context_length: 256000
 providers: {}
 fallback_providers:
-- provider: minimax-direct
-  model: MiniMax-M3
 - provider: novita
   model: moonshotai/kimi-k2.6
 - provider: freellmapi
