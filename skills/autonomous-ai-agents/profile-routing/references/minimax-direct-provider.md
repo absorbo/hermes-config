@@ -12,40 +12,29 @@ Plugin files:
 
 ## Provider definition
 
-The plugin declares:
+The plugin declares its own metadata (name, aliases, env_vars, base_url, auth_type, fallback_models). **Read the plugin source for exact values** — do not duplicate here.
 
-```python
-ProviderProfile(
-    name="minimax-direct",
-    aliases=("minimax-direct",),
-    display_name="MiniMax Direct",
-    env_vars=("MINIMAX_API_KEY", "MINIMAX_BASE_URL"),
-    base_url="https://api.minimax.io/v1",
-    auth_type="api_key",
-    default_aux_model="MiniMax-M2.5",
-    fallback_models=("MiniMax-M2.5", "MiniMax-M3"),
-)
+```bash
+cat ~/.hermes/plugins/model-providers/minimax-direct/__init__.py
 ```
 
-Runtime configs should use the plugin slug:
+Runtime configs should use the plugin slug. Read the live configs for exact current values:
 
-```yaml
-model:
-  provider: minimax-direct
-  default: MiniMax-M3
-```
-
-or:
-
-```yaml
-fallback_providers:
-  - provider: minimax-direct
-    model: MiniMax-M3
+```bash
+python3 - <<'PY'
+import yaml
+from pathlib import Path
+for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profiles').glob('*/config.yaml'))]:
+    data = yaml.safe_load(f.read_text()) or {}
+    model = data.get('model', {})
+    fallbacks = [x for x in (data.get('fallback_providers') or []) if x.get('provider') == 'minimax-direct']
+    print(f.parent.name if 'profiles' in str(f) else 'default', 'model.provider=', model.get('provider'), 'minimax-direct in fallbacks=', bool(fallbacks))
+PY
 ```
 
 ## Key requirement
 
-The MiniMax direct API (`api.minimax.io`) requires a real MiniMax API key in `MINIMAX_API_KEY`. Do not use keys from retired third-party gateways.
+The MiniMax direct API (`api.minimax.io/v1`) requires a real MiniMax API key in `MINIMAX_API_KEY`. Do not use keys from retired third-party gateways.
 
 ## Verification
 
@@ -65,5 +54,16 @@ hermes chat -q "Say OK" --model MiniMax-M3 --provider minimax-direct --quiet
 
 ## Current chain position
 
-- Default profile: fallback 1 after `openai-codex` / `gpt-5.5`.
-- `grcexpert` and `maartenwriter`: primary provider.
+Read the live configs to determine current position:
+
+```bash
+python3 - <<'PY'
+import yaml
+from pathlib import Path
+for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profiles').glob('*/config.yaml'))]:
+    data = yaml.safe_load(f.read_text()) or {}
+    model = data.get('model', {})
+    fallbacks = [x.get('provider') for x in (data.get('fallback_providers') or [])]
+    print(f.parent.name if 'profiles' in str(f) else 'default', 'primary=', model.get('provider'), 'fallbacks=', fallbacks)
+PY
+```

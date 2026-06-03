@@ -69,32 +69,19 @@ PY
 done
 ```
 
-Current fallback chain shape:
+Current fallback chain shape — read from live configs, do not duplicate here:
 
-```yaml
-# default
-fallback_providers:
-  - provider: minimax-direct
-    model: MiniMax-M3
-  - provider: novita
-    model: moonshotai/kimi-k2.6
-  - provider: freellmapi
-    model: auto
-  - provider: fatman-ollama
-    model: qwen3.6:35b-a3b-mlx-bf16
-    timeout: 300
-custom_providers: []
-
-# grcexpert / maartenwriter
-fallback_providers:
-  - provider: novita
-    model: moonshotai/kimi-k2.6
-  - provider: freellmapi
-    model: auto
-  - provider: fatman-ollama
-    model: qwen3.6:35b-a3b-mlx-bf16
-    timeout: 300
-custom_providers: []
+```bash
+python3 - <<'PY'
+import yaml
+from pathlib import Path
+for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profiles').glob('*/config.yaml'))]:
+    data = yaml.safe_load(f.read_text()) or {}
+    print(f.parent.name if 'profiles' in str(f) else 'default')
+    print('  model:', data.get('model'))
+    print('  fallbacks:', data.get('fallback_providers'))
+    print('  custom_providers:', data.get('custom_providers'))
+PY
 ```
 
 ## Phase 3 — Update all active documentation surfaces

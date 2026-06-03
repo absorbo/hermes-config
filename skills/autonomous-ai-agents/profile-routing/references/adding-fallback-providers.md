@@ -1,7 +1,5 @@
 # Adding a Provider to the Hermes Fallback Chain
 
-Complete workflow for inserting a provider into the Hermes fallback chain.
-
 ## Preconditions
 
 - For recurring custom endpoints, create or update a model-provider plugin under `~/.hermes/plugins/model-providers/<slug>/`.
@@ -24,7 +22,7 @@ done
 
 ### 2. Read the current config
 
-Inspect default and specialist configs before editing:
+Inspect default and specialist configs before editing. **These files are the source of truth — do not duplicate their contents in documentation.**
 
 ```bash
 python3 - <<'PY'
@@ -36,64 +34,26 @@ for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profi
 PY
 ```
 
-### 3. Insert into `fallback_providers`
+### 3. Edit configs
 
-The `fallback_providers` array is ordered. Insert the plugin slug in the intended position.
+Use the parsed output from step 2 to understand current shape. Insert the new plugin slug into `fallback_providers` in the intended position in each config that needs it. Use `python3` via terminal to edit — the `patch` tool is blocked on config.yaml.
 
-Current default chain shape:
-
-```yaml
-fallback_providers:
-  - provider: minimax-direct
-    model: MiniMax-M3
-  - provider: novita
-    model: moonshotai/kimi-k2.6
-  - provider: freellmapi
-    model: auto
-  - provider: fatman-ollama
-    model: qwen3.6:35b-a3b-mlx-bf16
-    timeout: 300
-
-custom_providers: []
-```
-
-Current specialist chain shape:
-
-```yaml
-fallback_providers:
-  - provider: novita
-    model: moonshotai/kimi-k2.6
-  - provider: freellmapi
-    model: auto
-  - provider: fatman-ollama
-    model: qwen3.6:35b-a3b-mlx-bf16
-    timeout: 300
-
-custom_providers: []
-```
-
-### 4. Validate YAML and provider discovery
+### 4. Validate
 
 ```bash
 hermes config check
 hermes doctor | sed -n '/API Connectivity/,/Tool Availability/p'
 ```
 
-### 5. Update all active documentation
+### 5. Update documentation (thin references only)
 
-At minimum update:
+Do NOT embed config blocks. Update these files to point to the live configs:
 
-| Doc | Path |
-|---|---|
-| Model configuration | `05 - AI/08 - Model Notes/Model Configuration.md` |
-| Profile overview | `05 - AI/03 - Personas/Hermes Agent Profiles.md` |
-| Gateway fallback note | `05 - AI/Dev/gateway-fallback-fix.md` |
-| AI MOC | `05 - AI/00 - AI-MOC/AI-MOC.md` |
-| Profile-routing skill refs | `~/.hermes/skills/autonomous-ai-agents/profile-routing/` |
-| Hermes config-management skill refs | `~/.hermes/skills/devops/hermes-config-management/` |
-| Cron pipeline docs if cron prompts/docs mention model/provider routing | `~/.hermes/skills/devops/cron-pipeline/references/pipeline-state.md` |
-
-Then search the broader `05 - AI/` tree and classify remaining hits as active docs/configs vs historical plans/backups/logs.
+- `05 - AI/08 - Model Notes/Model Configuration.md` — table pointing to config files
+- `05 - AI/03 - Personas/Hermes Agent Profiles.md` — profile list
+- `05 - AI/Dev/gateway-fallback-fix.md` — if fallback behavior changed
+- `05 - AI/00 - AI-MOC/AI-MOC.md` — if provider landscape changed
+- This skill's `SKILL.md` — if domain mappings changed
 
 ### 6. Commit both repos in the required order
 
