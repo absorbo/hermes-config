@@ -7,20 +7,12 @@ providers: {}
 fallback_providers:
 - provider: minimax-direct
   model: MiniMax-M3
-  base_url: https://api.minimax.io/v1
-  api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
 - provider: novita
   model: moonshotai/kimi-k2.6
-  base_url: https://api.novita.ai/openai/v1
-  api_key: sk_lrdKyBBWPQyZRCmdY3XhBPj2KoeTYK7b7NRsQGY-4Po
 - provider: freellmapi
   model: auto
-  base_url: http://localhost:3001/v1
-  api_key: freellmapi-26ecac0ac1285650d9860c9727614d11c4d8550b8317b22c
-- provider: fatman:11434
+- provider: fatman-ollama
   model: qwen3.6:35b-a3b-mlx-bf16
-  base_url: http://fatman:11434/v1
-  api_key: ollama
   timeout: 300
 credential_pool_strategies: {}
 toolsets:
@@ -583,23 +575,7 @@ paste_collapse_threshold: 5
 paste_collapse_threshold_fallback: 5
 paste_collapse_char_threshold: 2000
 _config_version: 26
-custom_providers:
-- name: minimax-direct
-  base_url: https://api.minimax.io/v1
-  api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
-  model: MiniMax-M3
-- name: fatman:11434
-  base_url: http://fatman:11434/v1
-  api_key: ollama
-  model: qwen3.6:35b-a3b-mlx-bf16
-- name: freellmapi
-  base_url: http://localhost:3001/v1
-  api_key: freellmapi-26ecac0ac1285650d9860c9727614d11c4d8550b8317b22c
-  model: auto
-- name: novita
-  base_url: https://api.novita.ai/openai/v1
-  api_key: sk_lrdKyBBWPQyZRCmdY3XhBPj2KoeTYK7b7NRsQGY-4Po
-  model: moonshotai/kimi-k2.6
+custom_providers: []
 session_reset:
   mode: both
   idle_minutes: 1440
