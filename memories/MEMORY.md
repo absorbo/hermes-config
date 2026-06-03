@@ -2,7 +2,7 @@ Vault: Clawbot at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Do
 §
 Email: ⛔ NEVER DELETE (ever, no exceptions — trash, deleted items, himalaya, m365-graph, google-workspace). ⛔ NEVER SEND. Draft replies only, in Maarten's writing style (learned from sent items), covering last 3 days unanswered. Replies must be genuinely helpful (decisions, growth, time), not pro-forma. This is non-negotiable for ALL email-related skills.
 §
-Hermes as of 2026-06-03: default profile uses gpt-5.5/openai-codex primary. Remaining specialist profiles are grcexpert and maartenwriter only; codereviewer and expertcoder were removed via dashboard. Specialists use MiniMax-M3/minimax-direct primary with novita, freellmapi, and fatman fallbacks. canopywave and deepseek-direct are discontinued/removed; openai-codex is built-in OAuth, not a custom provider. Commit order for Hermes changes: mirror to vault, remove runtime DB state from mirror, push vault, then push hermes-config.
+Hermes as of 2026-06-03: default profile gpt-5.5/openai-codex; specialists only grcexpert and maartenwriter. Removed: codereviewer, expertcoder. Commit discipline: obey SOUL.md commit gate mechanically; vault first, Hermes second; do not improvise; follow user instructions and guardrails exactly.
 §
 CRITICAL: security.redact_secrets=true masks API keys with `...` or `***` in ALL tool output. This is output-level masking — actual files have full keys. NEVER conclude a key is truncated/broken from redacted output. Always verify at byte level. Also: NEVER redact, strip, or replace user-authored content in vault notes; NEVER change model.default/provider/fallback order in config.yaml without explicit user instruction.
 §

@@ -1,0 +1,41 @@
+# Hermes mechanical guard policy
+# Keep this class-based. Do not add incident-by-incident special cases.
+
+paths:
+  home: /Users/absorbo
+  hermes: /Users/absorbo/.hermes
+  vault: /Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian
+  mirror: /Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/05 - AI/99 - Hermes
+
+read_before_act:
+  required:
+    - /Users/absorbo/.hermes/SOUL.md
+    - /Users/absorbo/.hermes/prefill.txt
+  require_state_read: true
+
+repository_order:
+  primary_repo: /Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian
+  secondary_repo: /Users/absorbo/.hermes
+  require_primary_pushed_before_secondary_push: true
+  require_mirror_sync_before_secondary_commit: true
+
+runtime_artifacts:
+  # Runtime/cache/build artifacts excluded from the Hermes vault mirror and commits.
+  # This is not a credentials policy.
+  - state.db*
+  - state-snapshots/
+  - pastes/
+  - node_modules/
+
+security_controls:
+  require_explicit_approval:
+    - github_push_protection_bypass
+    - git_force_push
+
+protected_actions:
+  always_block:
+    - email_send
+    - email_delete
+    - git_init_in_hermes
+  require_explicit_instruction:
+    - protected_config_write

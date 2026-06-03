@@ -479,8 +479,8 @@ command_allowlist:
 quick_commands: {}
 hooks:
   pre_tool_call:
-  - command: bash /Users/absorbo/.hermes/gates/pre-execution/git-commit-gate.sh
-    matcher: terminal
+  - command: /Users/absorbo/.hermes/gates/pre_tool_call_guard.py
+    matcher: .*
     timeout: 10
 hooks_auto_accept: true
 personalities: {}
