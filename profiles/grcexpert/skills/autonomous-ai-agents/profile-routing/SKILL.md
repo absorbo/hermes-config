@@ -35,20 +35,26 @@ PY
 
 | Profile | Alias | Skills | Specialization |
 |---------|-------|--------|---------------|
-| `grcexpert` | `grcexpert` | 939 (incl. 754 cybersecurity) | GRC, cybersecurity, CyFUN, NIS2, risk management, compliance, audit, policy authoring |
-| `maartenwriter` | `maartenwriter` | 185 (incl. 42 wondelai, 15 maestro, avoid-ai-writing) | Creative writing, novel chapters, continuity, editing, humanizing, narrative |
-| `default` | — | 188 (incl. 42 wondelai, avoid-ai-writing) | General tasks, orchestration, routing, system administration, code tasks when no specialist exists |
+| `grcexpert` | `grcexpert` | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh grcexpert` | GRC, cybersecurity, NIS2, risk management, compliance, audit, policy authoring |
+| `maartenwriter` | `maartenwriter` | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh maartenwriter` | Creative writing, novel chapters, continuity, editing, humanizing, narrative |
+| `default` | — | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh default` | General tasks, orchestration, routing, system administration, code tasks when no specialist exists |
 
 **Fallback chains** — read from the same configs above (`fallback_providers` field). Do not cache in documentation.
 
 All profiles use `api_max_retries: 1` for fast failover. Each fallback tier gets a single retry before the chain moves to the next tier.
 
-See `references/model-failover-testing.md` for diagnostic procedures, `references/adding-fallback-providers.md` for the workflow to add or reorder providers in the chain, and `references/minimax-direct-provider.md` for the MiniMax direct API setup and key requirements.
+See `references/model-failover-testing.md` for diagnostic procedures, `references/adding-fallback-providers.md` for the workflow to add or reorder providers in the chain, `references/minimax-direct-provider.md` for the MiniMax direct API setup and key requirements, and `references/check-failover-health-script.md` for the **read-only, no-hardcoded-values** contract that the verification script must follow.
 
 **To smoke-test the entire chain:** run `scripts/test-fallback-chain.sh` — it reads config.yaml, extracts all keys, and tests every tier with curl.
 
 **⚠️ Pitfall — profile configs and provider plugins MUST be verified per profile:**
 Profile configs are independent. When adding or renaming a provider in `fallback_providers`, update EVERY profile config (`~/.hermes/profiles/*/config.yaml`) and verify the provider is resolvable from that profile's `HERMES_HOME`. If the provider is represented by a first-class model-provider plugin, make sure the profile can discover that plugin and use the plugin slug consistently (for example `fatman-ollama`, not the old config-only slug `fatman:11434`). Do not reintroduce inline secret-bearing `custom_providers` blocks for recurring endpoints unless the user explicitly requests that older pattern. After any fallback chain change, run a consistency check across all profiles.
+
+**⚠️ Pitfall — config-file change does NOT change the running session.**
+Editing `~/.hermes/config.yaml` (or any profile's config.yaml) is a DISK change. The gateway process loaded the old config at startup and continues to use it until `hermes gateway restart` is run. The "Model:" and "Provider:" fields in the system prompt show the **gateway's runtime state**, not the file. After any primary model/provider change, ALWAYS run `hermes gateway restart` and confirm with `hermes doctor` and `hermes config get model.default`. The 2026-06-03 session left the user on the old model for one turn because this was missed — the next turn was the first on the new primary. The user explicitly noted: "why are you on kimi-k2? you should be on minimax-m3!!!!! WHAT THE FUCK DID YOU BREAK NOW!!!!!!!!"
+
+**⚠️ Pitfall — `check-failover-health.sh` must READ configs, not assert fixed values.**
+The verification script under `scripts/` must extract `model.provider` and `model.default` from `config.yaml` and print what the live config says. It must NEVER hardcode `openai-codex/gpt-5.5` (or any other expected primary) and emit FAIL on mismatch. Hardcoding creates a script that lies about state and forces a code change on every model switch. The right pattern: parse configs, print findings, exit non-zero only on discovery failure (missing plugin) or parse error (broken YAML), not on policy preference. See `references/check-failover-health-script.md` for the full contract.
 
 **To verify which model/provider is currently active** (when the user asks "what model are we on?"):
 ```bash
@@ -61,7 +67,7 @@ hermes config get model.default && hermes config get model.provider
 
 When the user's request falls into ANY of these domains, DELEGATE to the matching profile. Do NOT handle directly.
 
-### → grcexpert (MiniMax-M3 / minimax-direct)
+### → grcexpert (model/provider read from config — see command above)
 
 **ALWAYS delegate when the task involves:**
 
@@ -73,21 +79,22 @@ When the user's request falls into ANY of these domains, DELEGATE to the matchin
 - Incident response planning and playbooks
 - Information classification, data protection impact assessments
 - Supplier/vendor security assessment
-- Belgian or EU cybersecurity regulation (NIS2, EU AI Act, GDPR/AVG)
+- Customer cybersecurity frameworks defined in vault under `10 - Customers/`
 - CyFUN OD/DR code mapping and compliance
 - Security awareness and training program design
 - Business continuity and disaster recovery planning (security context)
-- Any task involving the `04 - Knowledge/DigitaalVlaanderen/` or `04 - Knowledge/CyFUN/` vault sections
-- Any task involving the 754 cybersecurity skills
-- Verlinfo/Verla/CyFUN/GRC/NIS2 questions (read CONTEXT.md chain first per prefill rule)
+- Any task involving cybersecurity skills in the profile
+- Customer-specific GRC/cybersecurity/compliance/NIS2 questions
+
+**Before delegating:** if a customer has a prefill chain, context MOC, or overview file, read it first and include the path in the delegation context.
 
 **Delegation method:**
 ```
 delegate_task(
     goal="<specific GRC/cybersecurity task>",
     context="<all relevant file paths, vault sections, and constraints>",
-    model="MiniMax-M3",
-    provider="minimax-direct",
+    model="<profile's model — read from config>",
+    provider="<profile's provider — read from config>",
     toolsets=["terminal", "file", "web", "search", "skills", "session_search", "obsidian", "note-taking"]
 )
 ```
@@ -97,7 +104,7 @@ For complex multi-step GRC tasks, use terminal spawn:
 terminal(command="hermes --profile grcexpert chat -q '<self-contained prompt>'", timeout=300)
 ```
 
-### → maartenwriter (MiniMax-M3 / minimax-direct)
+### → maartenwriter (model/provider read from config — see command above)
 
 **ALWAYS delegate when the task involves:**
 
@@ -106,7 +113,7 @@ terminal(command="hermes --profile grcexpert chat -q '<self-contained prompt>'",
 - Editing for voice, tone, and style (not technical editing)
 - Humanizing AI-generated text into natural prose — **always load the `avoid-ai-writing` skill** for AI-ism detection and removal
 - Writing in specific literary styles or authorial voices
-- Any task in the `70-Writing/` vault workspace
+- Any task in a creative writing vault workspace
 - Story outlining, worldbuilding, character bios
 - Translation with stylistic intent (not just literal)
 
@@ -115,8 +122,8 @@ terminal(command="hermes --profile grcexpert chat -q '<self-contained prompt>'",
 delegate_task(
     goal="<specific writing task>",
     context="<vault paths, style guides, continuity notes, character references>",
-    model="MiniMax-M3",
-    provider="minimax-direct",
+    model="<profile's model — read from config>",
+    provider="<profile's provider — read from config>",
     toolsets=["terminal", "file", "web", "search", "skills", "obsidian", "note-taking"]
 )
 ```
@@ -202,9 +209,9 @@ Before any substantive action, the default agent must:
 3. **If yes, DELEGATE** — choose delegate_task or terminal spawn based on complexity
 4. **If no, handle directly** — but only after confirming no profile matches. As of 2026-06-03, this includes code review and coding tasks because `codereviewer` and `expertcoder` were removed.
 
-## Verlinfo Special Case
+## Customer Context Pre-fill Convention
 
-The grcexpert prefill.txt enforces reading `10 - Customers/Verlinfo/00-Overview.md` before any Verlinfo/Verla/CyFUN/GRC/NIS2 question. When delegating Verlinfo-related tasks to grcexpert, include the 00-Overview.md path in the context and note the chain: 00-Overview.md → MOC → specific files.
+When a specialist profile has a prefill that enforces reading a customer overview file (for example `<profile>/prefill.txt` enforces reading `10 - Customers/<Customer>/00-Overview.md` before any GRC/cybersecurity/compliance question), the delegation context MUST include that overview path and the chain `00-Overview.md → MOC → specific files`. This is profile- and customer-specific; check the destination profile's prefill before delegating.
 
 ## Shared Skill Library (all profiles)
 
