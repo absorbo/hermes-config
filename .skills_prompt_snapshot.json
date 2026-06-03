@@ -42,8 +42,8 @@
       7259
     ],
     "autonomous-ai-agents/profile-routing/SKILL.md": [
-      1780266687450688036,
-      14433
+      1780499194172640447,
+      14360
     ],
     "content-pipeline-orchestrator/SKILL.md": [
       1780384254395543314,
@@ -146,7 +146,7 @@
       16143
     ],
     "creative/excalidraw/SKILL.md": [
-      1778890501919824296,
+      1780499194182526850,
       7300
     ],
     "creative/high-perf-browser/SKILL.md": [
@@ -378,8 +378,8 @@
       14326
     ],
     "hermes-operations/execution-discipline/SKILL.md": [
-      1780258540473689557,
-      14467
+      1780499908116897729,
+      15251
     ],
     "hermes-operations/hermes-shell-hooks/SKILL.md": [
       1780258531925263242,
@@ -410,11 +410,11 @@
       3218
     ],
     "mlops/evaluation/lm-evaluation-harness/SKILL.md": [
-      1778890501935994799,
+      1780499194199880764,
       12020
     ],
     "mlops/evaluation/weights-and-biases/SKILL.md": [
-      1778890501936448339,
+      1780499194203923126,
       12395
     ],
     "mlops/huggingface-hub/SKILL.md": [
@@ -426,11 +426,11 @@
       8880
     ],
     "mlops/inference/obliteratus/SKILL.md": [
-      1778890501937488334,
-      15464
+      1780499194207568277,
+      15111
     ],
     "mlops/inference/vllm/SKILL.md": [
-      1778890501937924790,
+      1780499194208142614,
       9071
     ],
     "mlops/models/audiocraft/SKILL.md": [
@@ -442,7 +442,7 @@
       13372
     ],
     "mlops/research/dspy/SKILL.md": [
-      1778890501939144076,
+      1780499194209621249,
       15220
     ],
     "note-taking/json-canvas/SKILL.md": [
@@ -470,8 +470,8 @@
       3241
     ],
     "note-taking/vault-documentation-stewardship/SKILL.md": [
-      1780340351583246146,
-      31267
+      1780499194212299018,
+      30527
     ],
     "obsidian/eod-feedback-capture/SKILL.md": [
       1779785189825036322,
@@ -518,8 +518,8 @@
       6867
     ],
     "red-teaming/godmode/SKILL.md": [
-      1778890501946088041,
-      20059
+      1780499194215439416,
+      19509
     ],
     "research/arxiv/SKILL.md": [
       1778890501946874746,
