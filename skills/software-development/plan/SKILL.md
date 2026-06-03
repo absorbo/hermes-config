@@ -1,6 +1,6 @@
 ---
 name: plan
-description: "Plan mode: write markdown plan to .hermes/plans/, no exec."
+description: "Plan mode: write markdown plan to the Clawbot vault under 05 - AI/Plans/, no exec."
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -23,7 +23,7 @@ For this turn, you are planning only.
 - Do not edit project files except the plan markdown file.
 - Do not run mutating terminal commands, commit, push, or perform external actions.
 - You may inspect the repo or other context with read-only commands/tools when needed.
-- Your deliverable is a markdown plan saved inside the active workspace under `.hermes/plans/`.
+- Your deliverable is a markdown plan saved in the Clawbot Obsidian vault under `05 - AI/Plans/`, not inside `.hermes/plans/`.
 
 ## Output requirements
 
