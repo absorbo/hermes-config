@@ -1,6 +1,6 @@
 model:
   default: MiniMax-M3
-  provider: minimax-direct
+  provider: custom
   base_url: https://api.minimax.io/v1
   api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
   context_length: 256000
@@ -246,6 +246,13 @@ auxiliary:
     base_url: ''
     api_key: ''
     timeout: 60
+    extra_body: {}
+  curator:
+    provider: auto
+    model: ''
+    base_url: ''
+    api_key: ''
+    timeout: 600
     extra_body: {}
   session_search:
     provider: auto
@@ -577,7 +584,7 @@ custom_providers:
 - name: fatman:11434
   base_url: http://fatman:11434/v1
   api_key: ollama
-  model: qwen3.6:27b-mxfp8
+  model: qwen3.6:35b-a3b-mlx-bf16
 - name: freellmapi
   base_url: http://localhost:3001/v1
   api_key: freellmapi-26ecac0ac1285650d9860c9727614d11c4d8550b8317b22c
