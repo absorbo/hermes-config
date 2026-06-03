@@ -39,8 +39,8 @@ See `references/model-failover-testing.md` for diagnostic procedures, `reference
 
 **To smoke-test the entire chain:** run `scripts/test-fallback-chain.sh` — it reads config.yaml, extracts all keys, and tests every tier with curl.
 
-**⚠️ Pitfall — profile configs MUST include all referenced providers in custom_providers:**
-When adding a provider to `fallback_providers`, you MUST also add it to `custom_providers` in EVERY profile config (`~/.hermes/profiles/*/config.yaml`). Profiles inheriting the default fallback chain may reference providers that don't exist in their own `custom_providers` list, causing silent fallback resolution failures. After any fallback chain change, run a consistency check across all profiles.
+**⚠️ Pitfall — profile configs and provider plugins MUST be verified per profile:**
+Profile configs are independent. When adding or renaming a provider in `fallback_providers`, update EVERY profile config (`~/.hermes/profiles/*/config.yaml`) and verify the provider is resolvable from that profile's `HERMES_HOME`. If the provider is represented by a first-class model-provider plugin, make sure the profile can discover that plugin and use the plugin slug consistently (for example `fatman-ollama`, not the old config-only slug `fatman:11434`). Do not reintroduce inline secret-bearing `custom_providers` blocks for recurring endpoints unless the user explicitly requests that older pattern. After any fallback chain change, run a consistency check across all profiles.
 
 **To verify which model/provider is currently active** (when the user asks "what model are we on?"):
 ```bash
