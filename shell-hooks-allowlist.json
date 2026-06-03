@@ -1,0 +1,10 @@
+{
+  "approvals": [
+    {
+      "approved_at": "2026-05-31T20:16:16.037820Z",
+      "command": "bash /Users/absorbo/.hermes/gates/pre-execution/git-commit-gate.sh",
+      "event": "pre_tool_call",
+      "script_mtime_at_approval": "2026-05-31T13:01:18.951138Z"
+    }
+  ]
+}

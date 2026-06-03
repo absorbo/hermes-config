@@ -6,8 +6,8 @@
       2169
     ],
     "apple/apple-reminders/SKILL.md": [
-      1778890501909130389,
-      2530
+      1780134897706695947,
+      3606
     ],
     "apple/findmy/SKILL.md": [
       1778890501909209680,
@@ -42,12 +42,12 @@
       7259
     ],
     "autonomous-ai-agents/profile-routing/SKILL.md": [
-      1779967872578769049,
-      13707
+      1780266687450688036,
+      14433
     ],
     "content-pipeline-orchestrator/SKILL.md": [
-      1780034797736977097,
-      8285
+      1780384254395543314,
+      953
     ],
     "creative/37signals-way/SKILL.md": [
       1779538798922494152,
@@ -302,8 +302,8 @@
       27176
     ],
     "creative/writing-studio/SKILL.md": [
-      1779813976691469425,
-      18046
+      1780158102973788368,
+      18606
     ],
     "data-science/jupyter-live-kernel/SKILL.md": [
       1778890501931067074,
@@ -314,12 +314,12 @@
       1406
     ],
     "devops/cron-pipeline/SKILL.md": [
-      1779575926098060004,
-      3866
+      1780106816415484931,
+      4460
     ],
     "devops/kanban-orchestrator/SKILL.md": [
-      1778890501931200865,
-      14105
+      1780229862078995321,
+      15808
     ],
     "devops/kanban-worker/SKILL.md": [
       1780048301079471304,
@@ -328,10 +328,6 @@
     "devops/maarten-implementation-protocol/SKILL.md": [
       1779589876932317919,
       14467
-    ],
-    "devops/vault-path-migration/SKILL.md": [
-      1779874531572869566,
-      4427
     ],
     "devops/webhook-subscriptions/SKILL.md": [
       1778890501931503321,
@@ -346,8 +342,8 @@
       7164
     ],
     "energy-optimization/SKILL.md": [
-      1779786838524592290,
-      7319
+      1780107519984792226,
+      8758
     ],
     "gaming/minecraft-modpack-server/SKILL.md": [
       1778890501932340609,
@@ -378,12 +374,16 @@
       11142
     ],
     "github/github-repo-management/SKILL.md": [
-      1779588220697896148,
-      13941
+      1780074903454958737,
+      14326
     ],
     "hermes-operations/execution-discipline/SKILL.md": [
-      1780074149655609745,
-      11838
+      1780258540473689557,
+      14467
+    ],
+    "hermes-operations/hermes-shell-hooks/SKILL.md": [
+      1780258531925263242,
+      7309
     ],
     "mcp/native-mcp/SKILL.md": [
       1778890501935099262,
@@ -462,16 +462,16 @@
       5367
     ],
     "note-taking/obsidian/SKILL.md": [
-      1780067987088846568,
-      9079
+      1780373593649378065,
+      13634
     ],
     "note-taking/ocr-scanned-pdfs/SKILL.md": [
       1779877382254270024,
       3241
     ],
     "note-taking/vault-documentation-stewardship/SKILL.md": [
-      1780074177590305031,
-      17421
+      1780340351583246146,
+      31267
     ],
     "obsidian/eod-feedback-capture/SKILL.md": [
       1779785189825036322,
@@ -490,8 +490,8 @@
       14782
     ],
     "productivity/m365-graph/SKILL.md": [
-      1779941136906631260,
-      7042
+      1780290656417912150,
+      7624
     ],
     "productivity/maps/SKILL.md": [
       1778890501940900817,
@@ -544,10 +544,6 @@
     "smart-home/openhue/SKILL.md": [
       1778890501953582879,
       2713
-    ],
-    "smartprice-be/SKILL.md": [
-      1779786725758892122,
-      5575
     ],
     "social-media/xurl/SKILL.md": [
       1779881112070269979,
@@ -2001,19 +1997,6 @@
       }
     },
     {
-      "skill_name": "vault-path-migration",
-      "category": "devops",
-      "frontmatter_name": "vault-path-migration",
-      "description": "Migrate Obsidian vault references across iCloud path chan...",
-      "platforms": [],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
       "skill_name": "webhook-subscriptions",
       "category": "devops",
       "frontmatter_name": "webhook-subscriptions",
@@ -2220,6 +2203,22 @@
       "frontmatter_name": "execution-discipline",
       "description": "Default agent execution discipline — when executing direc...",
       "platforms": [],
+      "conditions": {
+        "fallback_for_toolsets": [],
+        "requires_toolsets": [],
+        "fallback_for_tools": [],
+        "requires_tools": []
+      }
+    },
+    {
+      "skill_name": "hermes-shell-hooks",
+      "category": "hermes-operations",
+      "frontmatter_name": "hermes-shell-hooks",
+      "description": "Create and register Hermes pre_tool_call shell hooks for ...",
+      "platforms": [
+        "macos",
+        "linux"
+      ],
       "conditions": {
         "fallback_for_toolsets": [],
         "requires_toolsets": [],
@@ -2864,23 +2863,6 @@
       "category": "smart-home",
       "frontmatter_name": "openhue",
       "description": "Control Philips Hue lights, scenes, rooms via OpenHue CLI.",
-      "platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "smartprice-be",
-      "category": "smartprice-be",
-      "frontmatter_name": "smartprice-be",
-      "description": "Integrate Belgian dynamic energy pricing (SmartPrice.be /...",
       "platforms": [
         "linux",
         "macos",

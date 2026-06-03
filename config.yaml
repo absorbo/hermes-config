@@ -10,10 +10,6 @@ fallback_providers:
   model: auto
   base_url: http://localhost:3001/v1
   api_key: freellmapi-26ecac0ac1285650d9860c9727614d11c4d8550b8317b22c
-- provider: deepseek-direct
-  model: deepseek-v4-pro
-  base_url: https://api.deepseek.com/v1
-  api_key: sk-f02e65d5be14486383e84194241aee47
 - provider: fatman:11434
   model: qwen3.6:27b-mxfp8
   base_url: http://fatman:11434/v1
@@ -251,13 +247,6 @@ auxiliary:
     api_key: ''
     timeout: 60
     extra_body: {}
-  curator:
-    provider: deepseek-direct
-    model: deepseek-v4-pro
-    base_url: ''
-    api_key: ''
-    timeout: 600
-    extra_body: {}
   session_search:
     provider: auto
     model: ''
@@ -276,6 +265,7 @@ display:
   resume_max_assistant_lines: 3
   resume_skip_tool_only: true
   busy_input_mode: interrupt
+  interface: cli
   tui_auto_resume_recent: false
   tui_agents_nudge: true
   bell_on_complete: false
@@ -300,7 +290,11 @@ display:
   tool_progress_overrides: {}
   tool_preview_length: 0
   ephemeral_system_ttl: 0
-  platforms: {}
+  platforms:
+    telegram:
+      streaming: true
+    discord:
+      streaming: false
   runtime_footer:
     enabled: false
     fields:
@@ -412,6 +406,7 @@ curator:
   min_idle_hours: 2
   stale_after_days: 30
   archive_after_days: 90
+  prune_builtins: true
   backup:
     enabled: true
     keep: 5
@@ -532,6 +527,13 @@ gateway:
   media_delivery_allow_dirs: []
   trust_recent_files: true
   trust_recent_files_seconds: 600
+streaming:
+  enabled: false
+  transport: auto
+  edit_interval: 0.8
+  buffer_threshold: 24
+  cursor: " \u2589"
+  fresh_final_after_seconds: 60.0
 sessions:
   auto_prune: false
   retention_days: 90
@@ -566,15 +568,12 @@ secrets:
 paste_collapse_threshold: 5
 paste_collapse_threshold_fallback: 5
 paste_collapse_char_threshold: 2000
-_config_version: 25
+_config_version: 26
 custom_providers:
 - name: minimax-direct
   base_url: https://api.minimax.io/v1
   api_key: sk-cp-3iBw0l1aigoVMjZKGxyxNHlwwO-ItyBi5Hv5nmNHX6vJEEveqQ5oT-E_9UEdet6Aga4wal2jiZwrIoSKr7o9wU7PJpT0hUn9A2BsVqBFVJpPSsst327CcCY
   model: MiniMax-M3
-- name: deepseek-direct
-  base_url: https://api.deepseek.com/v1
-  api_key: sk-f02e65d5be14486383e84194241aee47
 - name: fatman:11434
   base_url: http://fatman:11434/v1
   api_key: ollama
@@ -588,8 +587,6 @@ session_reset:
   idle_minutes: 1440
   at_hour: 4
 group_sessions_per_user: true
-streaming:
-  enabled: false
 platform_toolsets:
   cli:
   - browser
