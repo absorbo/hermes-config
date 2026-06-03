@@ -16,8 +16,6 @@ The default Hermes agent is the ORCHESTRATOR. It MUST delegate domain-specific t
 | If the task involves... | Delegate to... | Using... |
 |-------------------------|----------------|----------|
 | GRC, cybersecurity, CyFUN, NIS2, risk, compliance, audit, security policy, Verlinfo/Verla | `grcexpert` | `delegate_task(model="MiniMax-M3", provider="minimax-direct", ...)` |
-| Code review, PR review, security scanning, code quality, refactoring, bug analysis | `codereviewer` | `delegate_task(model="MiniMax-M3", provider="minimax-direct", ...)` |
-| Writing code, implementing features, architecture, refactoring, debugging, TDD | `expertcoder` | `delegate_task(model="MiniMax-M3", provider="minimax-direct", ...)` |
 | Creative writing, novel chapters, narrative, editing for style/voice, humanizing | `maartenwriter` | `delegate_task(model="MiniMax-M3", provider="minimax-direct", ...)` |
 | General tasks, orchestration, system admin, Hermes config, cross-domain coordination | `default` (handle directly) | — |
 

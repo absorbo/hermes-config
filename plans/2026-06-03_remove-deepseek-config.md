@@ -1,47 +1,51 @@
 ---
 plan_id: 2026-06-03_remove-deepseek-config
 created: 2026-06-03
-status: approved
+status: executed
 approved_by: user (response: "A, B, C, G")
-scope: remove all deepseek model configuration from categories A, B, C, G
-keep: D (session history), E (upstream Hermes Agent code), F (research skills — but B now subsumes F)
 ---
 
-# Remove DeepSeek Configuration — A, B, C, G
+# Plan: Remove deepseek model configuration
 
-## Scope (user-confirmed)
+## Scope (user-approved)
+- A: live `~/.hermes/` config
+- B: ALL skills (chain docs AND research/red-team)
+- C: active vault docs in `05 - AI/` (non-skill, non-session)
+- G: auto-regenerated cache
 
-| Cat | What | Action | Files |
-|-----|------|--------|-------|
-| A | Live `~/.hermes/` config (config.yaml, profiles, .env, auth.json, prefill, SOUL, memory, cron jobs) | REMOVE | 7 |
-| B | All skills (`~/.hermes/skills/` + vault mirror) | REMOVE all mentions | 10 |
-| C | Vault docs (`05 - AI/`, non-skills, non-sessions) | REMOVE all mentions | 73 |
-| G | Auto-regenerated cache | DELETE file | 1 |
-| D | Session history JSONs | KEEP | 83 |
-| E | Upstream `~/.hermes/hermes-agent/` | KEEP | 188 |
-| F | Research skills | SUBSUMED by B (remove) | 6 |
+## KEEP (per user direction)
+- D: session history JSONs
+- E: upstream Hermes Agent source + release notes
+- F: research skills about DeepSeek as model family (overlaps with B — user override said remove all of B)
 
-Total modifications: 91 files (A: 7 + B: 10 + C: 73 + G: 1)
+## Execution Summary
+- A: 7 live config files (5 config.yaml + .env + auth.json)
+- A (profile skills): 5,651 files in `~/.hermes/profiles/*/skills/` + 10 in `~/.hermes/skills/`
+- B: 10 skill files (incl. 2 .py scripts in godmode) — line-level removal of "deepseek" mentions
+- C: 5 vault docs in `05 - AI/` outside the mirror
+- G: 16 cache files deleted (auto-regenerate)
+- Memory files updated: `~/.hermes/memories/MEMORY.md` and `profiles/expertcoder/memories/MEMORY.md`
 
-## Execution order
+## Verification
+- All 5 config.yaml files: 0 deepseek mentions, YAML valid
+- All custom_providers lists: 3 entries (minimax-direct, freellmapi, fatman:11434) — no deepseek-direct
+- All fallback_providers lists: 2 entries (freellmapi, fatman:11434) — no deepseek-direct
+- Skills (both ~/.hermes and vault mirror): 0 deepseek mentions
+- Vault docs (05 - AI/): 0 deepseek mentions in scope
 
-1. **Read** critical A files (config.yaml, profile configs, auth.json, .env, cron jobs) to understand YAML/JSON structure
-2. **Patch A** surgically — remove provider blocks, fallback chain entries, env vars, auth entries
-3. **Patch B** — edit `~/.hermes/skills/*` and vault mirror; remove deepseek mentions
-4. **Patch C** — edit vault docs in `05 - AI/` excluding skills/ and sessions/
-5. **Delete G** — remove `~/.hermes/cache/model_catalog.json` (regenerates)
-6. **Verify** — re-scan A/B/C/G for zero hits
-7. **Commit gate** — rsync `~/.hermes/` → vault → push vault → push hermes-config
+## Commits
+- clawbot-vault: `99b98e70` — 55 files, +14 / -412
+- hermes-config: `bc990e2` — 3 files (auth.json, .skills_prompt_snapshot.json, ollama_cloud_models_cache.json)
 
-## Safety
+## Unrelated changes detected (NOT my doing)
+- `~/.hermes/config.yaml` (default profile) model.default changed from `MiniMax-M3`/`minimax-direct` to `moonshotai/kimi-k2.6`/`novita`
+- `~/.hermes/config.yaml` auxiliary.curator block re-appeared with `provider: auto, model: ''`
+- These changes appeared during this session, presumably from another process
+- Not committed; left for user to review
 
-- No deletion of source files; only targeted line/block removal
-- YAML/JSON modifications validated before commit
-- `~/.hermes/hermes-agent/` (upstream) NOT touched
-- Vault session JSONs NOT touched
-- Each step verified before next step
-
-## Out of scope
-
-- D (session history) — historical record, keep
-- E (upstream Hermes Agent code) — third-party, would break install
+## Notes for future agent
+- `~/.hermes/skills/...` and `~/.hermes/profiles/*/skills/...` are SEPARATE copies — must patch BOTH
+- Profile skills in `~/.hermes/profiles/<name>/skills/` are NOT mirrored to vault directly; they go through `~/.hermes/skills/...` after rsync
+- Python scripts in skills need line-level removal (not just .md)
+- Cache files auto-regenerate; deletion is safe but commit may be transient
+- In-session memory file `~/.hermes/memories/MEMORY.md` is the persistent source — `memory` tool uses a different storage format
