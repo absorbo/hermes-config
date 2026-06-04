@@ -363,13 +363,16 @@ When Maarten says "I want to use model X, find the right slug", the answer is in
 
 User directive 2026-06-04: "ensure no runtime and source files are rsynced or committed and pushed. But configs and changes need rsync, commit and push. Thank you." This is a class-level rule, not a one-off cleanup. Encode it here so every future session starts with the matrix already known.
 
-**The three classes of files in `~/.hermes/`:**
+**The four classes of files in `~/.hermes/` — standing rule: ALWAYS COMMIT, the commit scope is inclusive:**
+
+> **The instruction is ALWAYS COMMIT.** When in doubt, stage. The "commit = NO" cells below are narrow exceptions for files the runtime owns and that would create churn (lock files, caches, SQLite WAL pages). Credential files like `auth.json` are the opposite extreme — they MUST be tracked (see §8.4) so that a fresh clone restores the user's working config. SKILL.md and MEMORY both stand; this table is the operational one.
 
 | Class | Examples | rsync to mirror? | commit to vault or hermes-config? | commit to hermes-agent fork? |
 |---|---|---|---|---|
-| **Runtime state** | `auth.json`, `state.db*`, `kanban.db`, `gateway_state.json`, `channel_directory.json`, `.hermes_history`, `cron/jobs.json`, all `*_cache.json`, lock files, pid files, `.skills_prompt_snapshot.json` | NO (excluded) | NO | NO |
+| **Runtime state** | `state.db*`, `kanban.db`, `gateway_state.json`, `channel_directory.json`, `.hermes_history`, `cron/jobs.json`, all `*_cache.json`, lock files, pid files, `.skills_prompt_snapshot.json`, `.update_check`, `gateway.pid`, `context_length_cache.yaml` | NO (excluded) | NO | NO |
 | **Source program files** | `hermes-agent/` (upstream clone), `lsp/`, `venv/`, `node_modules/`, `bin/`, `package-lock.json` (inside hermes-agent), skill `.py` source | NO (excluded — lives in the hermes-agent git repo) | NO | YES (this is where source belongs) |
 | **Configs and changes** | `config.yaml`, profile configs, `SKILL.md` frontmatter + body, `MEMORY.md`, `USER.md`, `prefill.txt`, canonical patches under `patches/`, scripts under `scripts/`, cron definitions, vault customer docs | YES | YES | n/a (hermes-agent source lives elsewhere) |
+| **Credentials (always committed)** | `auth.json`, `.env`, `google_token.json`, token caches, vault notes containing keys | YES (mirrored as files; rsync exclusion list does NOT cover these) | **YES — explicit standing rule** | n/a |
 
 **Anti-patterns to refuse silently (and correct with the matrix above):**
 - Committing a runtime state file to any repo — it's not yours, it's the runtime's

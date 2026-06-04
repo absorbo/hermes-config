@@ -5,7 +5,7 @@ audio_cache/
 hermes-agent/
 venv/
 skills/
-plugins/
+plugins/hermes-achievements/
 cron/jobs.json
 profiles/
 *.log
