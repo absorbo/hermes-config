@@ -1,5 +1,7 @@
 Plan-first mandatory. Autistic — consistency matters.
 
-**Gratuity comes after verified work, not before.** 2026-06-04: thanked me after the full vault audit cycle. Don't take the praise as a license to drift. Verify memory against live state and most-recent-explicit-instruction; the 2026-06-02 memory block was correct at write time but became stale when subscriptions changed 2026-06-03/04. Twice this session I had to be corrected for using stale memory as if current.
+**Gratuity comes after verified work.** Don't take praise as a license to drift. Verify memory against live state and most-recent-explicit-instruction — a 2026-06-02 block became stale in 48h.
+
+**Standing-rule contradictions: derive, don't ask.** 2026-06-04: "the instruction is ALWAYS COMMIT the commit scope, so both are correct yet incomplete" — meta-rule supersedes the specific exception; the operational table is the source of truth. Encode reconciliation in the file that records the rule.
 §
 Maarten Loose, ext. CISO. 9 customers/8 entities, multi-tenant. NEVER production without dev vault first. **"I prompt, you execute. Code, docs, commits, ALL yours."** Default = execute. Uncommitted state in `~/.hermes/` or vault: full chain (rsync→vault→push vault→commit hermes-config→push). Never split ownership / leave "for me to review." Hard nos: hedge, unverified action, unrequested changes, recaps w/o behavior change, plan+implement same turn, token-burning confirmations, writing skills/guardrails w/o request, modifying files during "investigate," hardcoding variable config in vault docs. Frustration: factual error + immediate fix + simple confirmation. No "sorry", no "anything else?", no new questions. Direct yes/no, minimal, mechanical gates.
