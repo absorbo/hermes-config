@@ -1,5 +1,5 @@
 model:
-  default: kimi-for-coding
+  default: kimi-k2.6
   provider: kimi-coding
   context_length: 256000
 providers: {}
