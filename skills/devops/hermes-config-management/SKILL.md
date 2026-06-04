@@ -8,6 +8,11 @@ triggers:
   - user asks who/when/why a Hermes config block was changed or removed
   - debug task involving "the config used to have X but now doesn't"
   - destructive config cleanup task (e.g., "remove all references to provider X")
+  - patching a file in a forked/vendored upstream checkout (load `fork-upstream-patching` instead — drift-detection + daily cron is mandatory)
+related_skills:
+  - fork-upstream-patching
+  - cron-pipeline
+  - profile-routing
 category: devops
 ---
 
@@ -37,6 +42,8 @@ Before any `git` command touching `~/.hermes/` or vault files:
 3. Any unchecked → STOP and fix first.
 
 **Before running the rsync, check the scale of vault drift.** When `git status` shows hundreds of files (e.g. 940 line diff), 90%+ is usually skill-mirror drift under `05 - AI/99 - Hermes/.../skills/` or `05 - AI/99 - Hermes/profiles/*/skills/`. Run rsync first; the diff collapses to whatever is genuinely new. Do not try to investigate each file individually — that is exactly the analysis paralysis the gate exists to prevent. See `references/hermes-mirror-rsync-exclusions.md` for the canonical rsync command, the pitfall about filenames with spaces (e.g. `.update_check 2` that the exclude pattern won't match), and the heuristic for distinguishing drift from substantive change.
+
+**`~/.hermes/patches/` is part of the rsync chain — confirm it is included.** Canonical patches for forked upstream code (e.g. the user's `absorbo/hermes-agent` fork) live in `~/.hermes/patches/<name>.patch`. They are rsync'd to `<vault>/05 - AI/99 - Hermes/patches/` automatically. If the rsync exclude set silently drops `patches/`, drift-detection cron jobs fail open (silently no-op) and the next upstream sync wipes the local patch. The full pattern — generate canonical patch, ship drift script, wire `cronjob create --no-agent` watchdog — is in the **`fork-upstream-patching`** skill. Load it any time you patch a file in `~/.hermes/hermes-agent/` or any other vendored/forked checkout. User directive 2026-06-04: "the patch must include a catch when updating daily the providers.py is checked if it is overwritten so we do not have the same issue every single day, untill the source code is fixed" — this is a class-level rule, not a one-off.
 
 **Repos:**
 - PRIMARY (authoritative): `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian` → `https://github.com/absorbo/clawbot-vault.git`
@@ -316,7 +323,7 @@ for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profi
     elif any((c.get('provider'), c.get('default') or c.get('model')) == primary for c in chain):
         print(f'BROKEN: {f} -- primary {primary} appears in fallback chain')
     else:
-        print(f'OK: {f} -- primary {primary} not in fallback chain')
+        print(f'OK: {f} -- primary {provider}, {default} not in fallback chain')
 ```
 
 When asked to swap a primary or reorder the chain, do these in order:
@@ -328,3 +335,26 @@ When asked to swap a primary or reorder the chain, do these in order:
 6. Verify with `hermes doctor` and `hermes config get model.default`
 
 The user's standing rule is: NEVER change `model.default`/`model.provider`/`fallback_providers` without explicit instruction. When the instruction comes, run this whole sequence, not just the edit.
+
+## 10. "What's the right slug / model ID for provider X" — investigate, don't ask
+
+When Maarten says "I want to use model X, find the right slug", the answer is in the live endpoint's `/v1/models` listing, not in memory and not in the user. Investigate; do not ask the user to confirm.
+
+**Recipe (verified 2026-06-04 with kimi):**
+
+1. Identify the provider plugin: `ls ~/.hermes/plugins/model-providers/<provider>/`
+2. Read `__init__.py` to find the base URL and any key-prefix auto-routing.
+3. Hit the listing endpoint with the user's live key (no model parameter):
+   ```bash
+   curl -sS -H "Authorization: Bearer $KEY" https://<base-url>/v1/models
+   ```
+4. Read the response. For OpenAI-style listings, parse `data[].id` (API ID) and `data[].display_name` (human-facing name).
+5. **Convention (this user, verified 2026-06-04):** use the display name without vendor prefix in config files. Examples:
+   - `kimi-k2.6` (display name) — NOT `kimi-for-coding` (API ID), NOT `moonshotai/kimi-k2.6` (vendor-prefixed)
+   - `MiniMax-M3` (display name as returned) — NOT `minimax/MiniMax-M3` (vendor-prefixed)
+6. Smoke-test with the discovered slug using `call_llm` or equivalent — a 200 status is NOT sufficient (slug-vs-model-id trap). Verify the response body actually contains the expected content.
+7. Report findings: "API ID is X, display name is Y, both work, convention says use Y. Smoke-tested KIMI-OK."
+
+**Why this rule (correction from 2026-06-04):** the user explicitly said "I do not know the kimi-k2.6 slug, this is the model I want to use. The exact slug is for you to investigate and to confirm." Asking the user to confirm a slug the agent can discover in 10 seconds is a token burn and a delegation reversal. The user's role is to state the model they want; the agent's role is to find the right way to address it.
+
+**Do NOT do this rule's job badly:** if the endpoint returns a model that doesn't match what the user asked for (e.g. user said "Kimi K2.6" but `/v1/models` returns only an unrelated `kimi-v1-128k`), surface the mismatch to the user — do not silently substitute.

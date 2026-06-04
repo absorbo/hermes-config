@@ -1,0 +1,66 @@
+diff --git a/hermes_cli/providers.py b/hermes_cli/providers.py
+index ba25f7e63..d9d674b67 100644
+--- a/hermes_cli/providers.py
++++ b/hermes_cli/providers.py
+@@ -389,6 +389,19 @@ TRANSPORT_TO_API_MODE: Dict[str, str] = {
+     "bedrock_converse": "bedrock_converse",
+ }
+ 
++# Inverse of TRANSPORT_TO_API_MODE — used by the providers-plugin fall-through
++# in ``get_provider()`` to map a ``ProviderProfile.api_mode`` (the value
++# declared by the plugin) onto the transport key that ``ProviderDef`` and
++# ``determine_api_mode()`` expect. Unknown api_mode values default to
++# ``openai_chat`` (the universal fallback).
++_API_MODE_TO_TRANSPORT: Dict[str, str] = {
++    "chat_completions": "openai_chat",
++    "openai_chat": "openai_chat",
++    "anthropic_messages": "anthropic_messages",
++    "codex_responses": "codex_responses",
++    "bedrock_converse": "bedrock_converse",
++}
++
+ 
+ # -- Helper functions ---------------------------------------------------------
+ 
+@@ -469,6 +482,41 @@ def get_provider(name: str) -> Optional[ProviderDef]:
+             source="hermes",
+         )
+ 
++    # Fall-through: providers plugin registry.
++    # The bundled HERMES_OVERLAYS and the models.dev catalog are the
++    # primary sources, but user-declared providers (and any
++    # ``plugins/model-providers/<name>/`` or
++    # ``$HERMES_HOME/plugins/model-providers/<name>/``) register
++    # themselves via ``providers.register_provider(ProviderProfile(...))``.
++    # Without this fall-through, a configured provider like
++    # ``minimax-direct`` is invisible to ``get_provider()`` even though
++    # it works in practice — producing "Unknown provider 'minimax-direct'"
++    # when callers go through this code path.
++    #
++    # This is a strict superset: the overlay / models.dev branches above
++    # already short-circuit, so adding this branch cannot change the
++    # resolution of any provider that already resolves.
++    try:
++        from providers import get_provider_profile as _get_profile
++        profile = _get_profile(canonical)
++        if profile is not None:
++            return ProviderDef(
++                id=profile.name,
++                name=profile.display_name or profile.name,
++                transport=_API_MODE_TO_TRANSPORT.get(
++                    profile.api_mode, "openai_chat"
++                ),
++                api_key_env_vars=tuple(profile.env_vars or ()),
++                base_url=profile.base_url,
++                is_aggregator=False,
++                auth_type=profile.auth_type or "api_key",
++                source="plugin",
++            )
++    except Exception:
++        # providers module not importable (e.g. tests with stripped
++        # sys.path) — silently fall through to return None.
++        pass
++
+     return None
+ 
+ 

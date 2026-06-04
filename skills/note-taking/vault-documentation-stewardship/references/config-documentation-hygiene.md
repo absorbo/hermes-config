@@ -36,6 +36,47 @@ for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profi
 PY
 ```
 
+## Wikilink-first for cross-doc duplication (added 2026-06-04)
+
+The "no embedded YAML" rule above is one case of a broader pattern: **any fact that exists in a single source-of-truth location should be a `[[wikilink]]` to that location, not a duplicated value.** This applies to:
+
+- Skill counts per profile (single source: live `~/.hermes/skills/` and `~/.hermes/profiles/*/skills/`)
+- Profile names and SOUL.md paths
+- Model slugs and provider names
+- Cron job schedules and counts
+- Plugin tap lists
+- Any identifier that lives in another vault doc or live config
+
+**Example — Phase 3 audit found these inline duplicates and converted them to wikilinks:**
+
+```markdown
+# BAD — inlined value, stale immediately
+- **Skills:** 188 (42 wondelai, avoid-ai-writing, + builtins)
+- **Skills:** 939 (754 cybersecurity from mukul975, 42 wondelai, 15 maestro, 5 prism)
+- **Skills:** 185 (42 wondelai, 15 maestro, avoid-ai-writing)
+- Profile cron configs mirror the global `max_parallel_jobs: 2` cap
+
+# GOOD — wikilink to the single source
+- **Skills:** See [[Skills Inventory]] for live count + per-category breakdown. Run the live-query command there.
+- Profile cron configs mirror the global `max_parallel_jobs` cap (see [[Hermes Cron Jobs#Runtime Settings]])
+```
+
+**Verification recipe — find inline duplicates that should be wikilinks:**
+
+```bash
+# Look for hardcoded numbers that look like skill counts in doc files
+cd "/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/05 - AI"
+grep -nE "Skills:\*\* [0-9]+|skills: [0-9]+" $(find . -name "*.md" -not -path "*/99 - Hermes/*") 2>/dev/null
+
+# Look for hardcoded model/provider names that have a "current" or "primary" qualifier
+grep -nE "default: [a-z0-9_-]+|provider: [a-z]+-" $(find . -name "*.md" -not -path "*/99 - Hermes/*")
+
+# Look for hardcoded counts of items that have a canonical live source
+grep -nE "\\*\\*Skills:\\*\\*|taps: [0-9]+|jobs \\(|cron jobs:" $(find . -name "*.md" -not -path "*/99 - Hermes/*")
+```
+
+If a grep hit is in a doc file and a live-query or wikilink version exists elsewhere in the vault, convert the hit to a wikilink. The vault's value is in the graph of links, not in inline duplication.
+
 ## Where this applies
 
 - `05 - AI/08 - Model Notes/Model Configuration.md`
@@ -43,6 +84,7 @@ PY
 - `05 - AI/Dev/gateway-fallback-fix.md`
 - Any skill reference under `~/.hermes/skills/**` that documents Hermes provider/model/fallback chains
 - Cron pipeline docs if they mention provider/model routing
+- Skill counts, tap lists, cron job details — anywhere the SAME fact appears inline in multiple doc files
 
 ## Exceptions
 
