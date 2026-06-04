@@ -1,0 +1,23 @@
+manifest_version: 1
+name: superpowers
+version: 5.1.0
+kind: standalone
+description: "Hermes adapter for obra/superpowers: registers all Superpowers skills as qualified plugin skills and injects the using-superpowers bootstrap automatically on every turn."
+author: "Jesse Vincent / Prime Radiant; Hermes adapter installed locally"
+provides_hooks:
+  - pre_llm_call
+provides_skills:
+  - superpowers:brainstorming
+  - superpowers:dispatching-parallel-agents
+  - superpowers:executing-plans
+  - superpowers:finishing-a-development-branch
+  - superpowers:receiving-code-review
+  - superpowers:requesting-code-review
+  - superpowers:subagent-driven-development
+  - superpowers:systematic-debugging
+  - superpowers:test-driven-development
+  - superpowers:using-git-worktrees
+  - superpowers:using-superpowers
+  - superpowers:verification-before-completion
+  - superpowers:writing-plans
+  - superpowers:writing-skills
