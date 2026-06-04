@@ -36,6 +36,8 @@ Before any `git` command touching `~/.hermes/` or vault files:
    - □ Only THEN committed and pushed `hermes-config` SECOND
 3. Any unchecked → STOP and fix first.
 
+**Before running the rsync, check the scale of vault drift.** When `git status` shows hundreds of files (e.g. 940 line diff), 90%+ is usually skill-mirror drift under `05 - AI/99 - Hermes/.../skills/` or `05 - AI/99 - Hermes/profiles/*/skills/`. Run rsync first; the diff collapses to whatever is genuinely new. Do not try to investigate each file individually — that is exactly the analysis paralysis the gate exists to prevent. See `references/hermes-mirror-rsync-exclusions.md` for the canonical rsync command, the pitfall about filenames with spaces (e.g. `.update_check 2` that the exclude pattern won't match), and the heuristic for distinguishing drift from substantive change.
+
 **Repos:**
 - PRIMARY (authoritative): `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian` → `https://github.com/absorbo/clawbot-vault.git`
 - SECONDARY (convenience): `~/.hermes/` → `https://github.com/absorbo/hermes-config.git`
@@ -210,6 +212,14 @@ Before staging `~/.hermes`, always exclude or consciously classify:
 - `state.db`, `state.db-shm`, `state.db-wal`, `state-snapshots/`
 - `pastes/` and pasted-session files
 - generated dependency/build trees such as `node_modules/`
+- Hermes source code cloned under `hermes-agent/`, `lsp/`, `venv/`
+- Runtime caches: `models_dev_cache.json`, `ollama_cloud_models_cache.json`, `provider_models_cache.json`, `processes.json`, `context_length_cache.yaml`, `channel_directory.json`
+- Achievement plugin: `scan_checkpoint.json`, `scan_snapshot.json`
+- Gateway runtime: `gateway.lock`, `gateway.pid`, `gateway_state.json`
+- Cron runtime: `cron/jobs.json`
+- Transient state: `.hermes_history`, `.update_check`, `.skills_prompt_snapshot.json`, `.restart_last_processed.json`
+- Inner `.git/` (already tracked in the vault repo via the rsync target)
+- `bin/` (re-installed tooling, not version-controlled)
 
 Do **not** blanket-block credential/key files (`.env`, `auth.json`, `google_token.json`, token caches, vault notes containing keys). The user's repository policy can intentionally require committing credentials. If GitHub push protection blocks such a commit, stop and report the exact block; do not bypass without explicit approval.
 
@@ -262,3 +272,35 @@ If git history shows a commit by a previous agent (subject starts with "snapshot
 - `references/2026-06-03-push-protection-bypass-incident.md` — case study for the forbidden `git add -A` over-correction in `~/.hermes`, GitHub `GH013` push-protection handling, and the rule that bypassing push protection requires explicit user approval.
 - `references/kimi-coding-provider-quirks.md` — bundled `kimi-coding` plugin vs runtime resolver mismatch: the plugin declares `api.moonshot.ai/v1` but `sk-kimi-*` keys auto-route to `api.kimi.com/coding` (Anthropic Messages wire). Covers failover behavior, `KIMI_BASE_URL` override pitfalls, and the `User-Agent` requirement.
 - `references/2026-06-03-mechanical-guard-policy-refactor.md` — policy-class refactor follow-up: replaced explicit block-list sprawl with `policy.yaml`, added `node_modules/` to mirror/runtime cleanup, and verified vault-first/Hermes-second push after Git HTTPS auth recovery.
+- `references/2026-06-04-g7-primary-fallback-coherence.md` — **G7 case study**: "primary == last fallback is a broken config" coherence check. The coherence check script is also embedded in the `profile-routing` skill as an inline pitfall. Covers the slug-vs-model-id trap (kimi `moonshotai/kimi-k2.6` returns 200 with auth-fail body on the real Kimi endpoint because that endpoint only exposes `kimi-for-coding` as model ID), and the "always smoke-test after a swap" requirement. **Read this before any primary/fallback edit, every time.**
+
+## 9. Coherence checks (run before AND after any primary/fallback edit)
+
+A "primary appears in the fallback chain" config is logically incoherent and the user will read it as a bug. The check is mechanical -- run it as part of the plan, not as a judgment call:
+
+```python
+import yaml
+from pathlib import Path
+for f in [Path.home()/'.hermes/config.yaml', *sorted((Path.home()/'.hermes/profiles').glob('*/config.yaml'))]:
+    d = yaml.safe_load(f.read_text()) or {}
+    p = d.get('model', {}) or {}
+    chain = d.get('fallback_providers', []) or []
+    primary = (p.get('provider'), p.get('default'))
+    last = (chain[-1].get('provider'), chain[-1].get('default') or chain[-1].get('model')) if chain else None
+    if primary == last and primary != (None, None):
+        print(f'BROKEN: {f} -- primary {primary} == last fallback {last}')
+    elif any((c.get('provider'), c.get('default') or c.get('model')) == primary for c in chain):
+        print(f'BROKEN: {f} -- primary {primary} appears in fallback chain')
+    else:
+        print(f'OK: {f} -- primary {primary} not in fallback chain')
+```
+
+When asked to swap a primary or reorder the chain, do these in order:
+1. Run the check BEFORE the edit (confirm clean baseline)
+2. Make the edit (use Python yaml round-trip, not `hermes config set` -- it doesn't handle full nested blocks)
+3. Run the check AFTER the edit
+4. Smoke-test the new primary with an actual completion call (NOT a 200-status-only check; that's the slug-vs-model-id trap)
+5. Restart the gateway -- a config-file change does NOT change the running session
+6. Verify with `hermes doctor` and `hermes config get model.default`
+
+The user's standing rule is: NEVER change `model.default`/`model.provider`/`fallback_providers` without explicit instruction. When the instruction comes, run this whole sequence, not just the edit.

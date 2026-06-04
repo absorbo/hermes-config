@@ -2,6 +2,8 @@ Vault: Clawbot at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Do
 §
 Email: ⛔ NEVER DELETE (ever, no exceptions — trash, deleted items, himalaya, m365-graph, google-workspace). ⛔ NEVER SEND. Draft replies only, in Maarten's writing style (learned from sent items), covering last 3 days unanswered. Replies must be genuinely helpful (decisions, growth, time), not pro-forma. This is non-negotiable for ALL email-related skills.
 §
-Hermes as of 2026-06-03: default profile gpt-5.5/openai-codex; specialists only grcexpert and maartenwriter. Removed: codereviewer, expertcoder. Commit discipline: obey SOUL.md commit gate mechanically; vault first, Hermes second; do not improvise; follow user instructions and guardrails exactly.
-§
 CRITICAL: security.redact_secrets=true masks API keys with `...` or `***` in ALL tool output. This is output-level masking — actual files have full keys. NEVER conclude a key is truncated/broken from redacted output. Always verify at byte level. Also: NEVER redact, strip, or replace user-authored content in vault notes; NEVER change model.default/provider/fallback order in config.yaml without explicit user instruction.
+§
+Verified 2026-06-04: a 940-file `git status` in clawbot-vault reduced to 33 after running the canonical rsync — 96% was skill-mirror drift under `05 - AI/99 - Hermes/.../skills/`. When the diff is huge, rsync first, then assess. The heuristic is in the same reference.
+§
+Hermes 2026-06-04 (G7 fix applied): default `minimax-direct/MiniMax-M3`; grcexpert same; maartenwriter `kimi-coding/moonshotai/kimi-k2.6` (intentional: kimi for writing voice, MiniMax for general). Fallback chain `kimi → freellmapi → fatman-ollama` (fatman legit last-resort now). Slug-vs-model-id trap: `moonshotai/kimi-k2.6` returns 200+auth-error-body on `api.kimi.com/coding/v1/models`; endpoint only exposes `kimi-for-coding`. Always GET `/v1/models` first to confirm exposed IDs. Primary==last-fallback = broken config; coherence check in `profile-routing/references/primary-vs-fallback-coherence.md`. Run it before AND after any primary/chain edit.

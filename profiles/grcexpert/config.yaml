@@ -6,7 +6,7 @@ providers: {}
 custom_providers: []
 fallback_providers:
 - provider: kimi-coding
-  model: moonshotai/kimi-k2.6
+  model: kimi-for-coding
 - provider: freellmapi
   model: auto
 - provider: fatman-ollama
