@@ -237,9 +237,28 @@ If the user is angry about prior selective staging, the correction is **not** to
 - **No performative token burn.** Long apologies, repeated promises, and verbose explanations of why the agent was wrong are not remediation. Prefer: exact answer → exact state → exact next action/blocker. If no action is requested, stop.
 - **For guardrail/hook design, do not over-generalize.** The user wants mechanical enforcement of documented guardrails, not a scope firewall that makes the agent useless. Hooks should block objective violations only; instruction-following is enforced by read-before-act gates and concrete workflow gates, not by guessing task scope.
 
+## Role and division of work (correction from 2026-06-04)
+
+**The user prompts. The agent executes. No exceptions.** The agent creates code, docs, configs, commits — everything. Do not attribute work to the user ("I see you changed X") when the user did not touch any file. Do not ask "did YOU make this change?" — the user did not.
+
+This means:
+- **Do not paste a "fix plan" and ask the user to confirm obvious edits** when the user has already approved the action. Approved = approved. State the plan, then execute.
+- **Do not refuse obvious execution steps** ("should I run this curl?") when the user has already given the go. Run it and report.
+- **Do not re-paste questions whose answer is in the immediate prior context.** The user has explained the same thing up to 4 times in one session because the agent kept asking variants. Read the prior turn, the prior-previous turn, and the turn before that. The answer is there.
+- **Do not invent philosophical gates** ("should I propose a fix?") when the user asked for a fix. Propose the fix with evidence; wait only on the "execute" step.
+
+The mechanical gates (read-before-act, plan-before-execute, no-silent-commit) are NOT the same as asking permission for everything. They exist to prevent unrequested changes, not to delay requested ones.
+
+## Failure attribution (correction from 2026-06-04)
+
+When something is broken, the default assumption is **the agent caused it in a prior session**. The user is not the one who broke it. Do not say "this is what YOU changed" or "this is what you broke" unless you have direct, irrefutable evidence (a commit you made, a file edit you performed in this session). The user said it directly: "I did not touch 1 file, 1 letter, you are the resource, I prompt, that is ALL."
+
+If git history shows a commit by a previous agent (subject starts with "snapshot:" or by a non-Maarten author), say so. Otherwise, do not attribute.
+
 ## Related case studies and playbooks
 
 - `references/2026-06-03-deepseek-removal-and-writeback.md` — postmortem of the auxiliary.curator runtime-write-back incident. Pattern for "agent committed a runtime write-back without asking".
 - `references/profile-removal-cleanup.md` — playbook for the class of task "user added/removed a profile via the Hermes dashboard — make everything reflect it". Touches SOUL.md, profile-routing skill, and four vault docs. Distinct from provider removal.
 - `references/2026-06-03-push-protection-bypass-incident.md` — case study for the forbidden `git add -A` over-correction in `~/.hermes`, GitHub `GH013` push-protection handling, and the rule that bypassing push protection requires explicit user approval.
+- `references/kimi-coding-provider-quirks.md` — bundled `kimi-coding` plugin vs runtime resolver mismatch: the plugin declares `api.moonshot.ai/v1` but `sk-kimi-*` keys auto-route to `api.kimi.com/coding` (Anthropic Messages wire). Covers failover behavior, `KIMI_BASE_URL` override pitfalls, and the `User-Agent` requirement.
 - `references/2026-06-03-mechanical-guard-policy-refactor.md` — policy-class refactor follow-up: replaced explicit block-list sprawl with `policy.yaml`, added `node_modules/` to mirror/runtime cleanup, and verified vault-first/Hermes-second push after Git HTTPS auth recovery.

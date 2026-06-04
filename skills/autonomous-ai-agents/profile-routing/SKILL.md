@@ -43,7 +43,7 @@ PY
 
 All profiles use `api_max_retries: 1` for fast failover. Each fallback tier gets a single retry before the chain moves to the next tier.
 
-See `references/model-failover-testing.md` for diagnostic procedures, `references/adding-fallback-providers.md` for the workflow to add or reorder providers in the chain, `references/minimax-direct-provider.md` for the MiniMax direct API setup and key requirements, and `references/check-failover-health-script.md` for the **read-only, no-hardcoded-values** contract that the verification script must follow.
+See `references/model-failover-testing.md` for diagnostic procedures, `references/adding-fallback-providers.md` for the workflow to add or reorder providers in the chain, `references/minimax-direct-provider.md` for the MiniMax direct API setup and key requirements, `references/check-failover-health-script.md` for the **read-only, no-hardcoded-values** contract that the verification script must follow, `references/kimi-failover-wire-mismatch.md` for the **kimi-coding fallback wire-format mismatch** that can cause silent failover failure even when `hermes doctor` is green, and `references/kimi-coding-provider-quirks.md` (in `hermes-config-management`) for the full technical breakdown of the plugin/resolver mismatch, `KIMI_BASE_URL` override pitfalls, and the `User-Agent` requirement.
 
 **To smoke-test the entire chain:** run `scripts/test-fallback-chain.sh` — it reads config.yaml, extracts all keys, and tests every tier with curl.
 
@@ -223,6 +223,21 @@ These skills from `wondelai/skills` (creative/ category) are available to ALL ag
 
 **Marketing/Sales:** cro-methodology, storybrand-messaging, scorecard-marketing, contagious, one-page-marketing, influence-psychology, predictable-revenue, made-to-stick, hundred-million-offers
 
-**Code Quality/Architecture** (no dedicated code-review specialist profile currently exists): clean-code, refactoring-patterns, software-design-philosophy, pragmatic-programmer, domain-driven-design, ddia-systems, system-design, clean-architecture, release-it, high-perf-browser
+## Other
 
-**Other:** drive-motivation, avoid-ai-writing (creative/ category, v3.4.0, AI-ism removal)
+- **avoid-ai-writing** (creative/ category, v3.4.0, AI-ism removal)
+
+## Role and division of work (correction from 2026-06-04)
+
+**The user prompts. The agent executes. No exceptions.** The agent creates code, docs, configs, commits — everything. Do not attribute work to the user. Do not ask "did YOU make this change?" — the user did not.
+
+Practical implications:
+- **Do not paste a "fix plan" and ask the user to confirm obvious edits** when the user has already approved the action. State the plan, execute, verify. Approved = approved.
+- **Do not re-ask questions whose answer is in the immediate prior context.** Read the prior 2-3 turns before asking. The user has explained the same thing up to 4 times in one session because the agent kept asking variants.
+- **Do not invent philosophical gates** ("should I propose a fix?") when the user asked for a fix. Propose with evidence; wait only on the execute step.
+
+The mechanical gates (read-before-act, plan-before-execute, no-silent-commit) prevent **unrequested** changes. They do NOT delay **requested** ones. Do not confuse the two.
+
+## Failure attribution (correction from 2026-06-04)
+
+When something is broken, default to **the agent caused it in a prior session**. The user is not the one who broke it. Do not say "this is what you broke" unless you have direct, irrefutable evidence from the current session. The user has stated: "I prompt, you execute." Past failures are past-agent failures until proven otherwise.

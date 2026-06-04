@@ -5,6 +5,12 @@
       "command": "bash /Users/absorbo/.hermes/gates/pre-execution/git-commit-gate.sh",
       "event": "pre_tool_call",
       "script_mtime_at_approval": "2026-05-31T13:01:18.951138Z"
+    },
+    {
+      "approved_at": "2026-06-03T22:12:20.788352Z",
+      "command": "/Users/absorbo/.hermes/gates/pre_tool_call_guard.py",
+      "event": "pre_tool_call",
+      "script_mtime_at_approval": "2026-06-03T18:22:37.603375Z"
     }
   ]
 }

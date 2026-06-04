@@ -40,6 +40,46 @@ Include, when relevant:
 
 If the task is code-related, include exact file paths, likely test targets, and verification steps.
 
+## Plan hygiene — writeup-only
+
+The plan markdown is a writeup. It is NOT a delivery artifact.
+
+- **No `# was: ...` annotations in code or YAML snippets.** Plan snippets are
+  read by humans to decide whether to approve. A `was:` comment is clutter
+  and signals "I was here before, ignore the old value" — which is what
+  the plan is FOR, not what the snippet is for. The cleanest snippet is
+  the one that looks exactly like the final file. The history belongs
+  in the prose, not in the code.
+- **No diff-style blocks (`- old`, `+ new`) unless the user asks for them.**
+  Show the target state. If the user wants to see the diff, they will ask.
+- **No meta-commentary about your own mistakes** inside the plan. Plans
+  are forward-looking.
+- **No "should I do X?" questions inside the plan.** The plan IS the
+  proposal. If there is a genuine decision to make, the plan must surface
+  it explicitly and stop, but it must not also implement.
+- **No inline comments that reveal prior state** (e.g., `# was: novita`,
+  `# previously minimax`). These are clutter in committed files and in
+  plan writeups. The user explicitly rejected them as "clutter at all costs."
+
+## Plan-first gate (mechanical)
+
+Plan mode is the gate, not a courtesy. The contract is:
+
+- The plan turn and the implementation turn are SEPARATE turns.
+- The plan turn ends with an explicit "Waiting for your explicit 'go'
+  before implementation." or equivalent.
+- The implementation turn begins with a user message containing the go
+  signal in plain text.
+- A `clarify` call where the user_response is empty or skipped is NOT
+  a go signal — it is "no answer." Stop and re-present the plan.
+- A bare "ok," "fine," or "do it" without a plain text go does not
+  override an empty clarify response. The user may have been skimming.
+
+This applies to non-trivial work. For trivial fixes (a typo, a
+one-line config change), the user can fold the plan and execution into
+one turn — the user's instruction in that case is implicit approval.
+The default is to gate.
+
 ## Save location
 
 Save the plan with `write_file` under the Clawbot Obsidian vault, without exception:
