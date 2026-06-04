@@ -234,6 +234,30 @@ git status --short
 
 If the user is angry about prior selective staging, the correction is **not** to commit forbidden runtime state. The correction is to follow the documented repository hygiene rules mechanically and explain any GitHub-enforced hard block with evidence.
 
+### 8.4 `security.redact_secrets=true` is FALSE in this vault — keys are always committed
+
+**This is a hard rule. Do not invent a "NEVER commit .env" policy.**
+
+The user's repository policy intentionally commits credential files (`.env`, `auth.json`, `google_token.json`, vault notes containing keys, etc.). The `security.redact_secrets` setting masks secrets in **agent output for display** (so the model doesn't echo raw keys in tool result text), but it is FALSE for **storage**: the on-disk file and committed git blob always contain the real key.
+
+**Symptoms of getting this wrong (verified 2026-06-04, on committing a Kimi key rotation):**
+- The agent invents a "NEVER commit any change in `~/.hermes/.env`" rule
+- The agent `git reset`s `.env` from the index, leaving the key rotation uncommitted
+- The agent tells the user "I didn't commit secrets" as if that were the correct outcome
+- The user has to shout to correct: *"SOUL.md security.redact_secrets=true is FALSE... KEYS MAY NEVER BE OBFUSCATED AND ARE ALWAYS COMMITTED, YOU ARE DREAMING."*
+
+**Correct pattern:**
+1. `git add .env` along with other config changes when the user asked for a key rotation
+2. Commit it
+3. Push it (push protection will not block; the secrets policy is intentional)
+4. Do not invent phantom "secret" categories. Real secret-leak cases (raw keys in shell history posted to remote, debug logs printed to public channels) are different and require different handling — but a key sitting in a committed `.env` is the user's intended state.
+
+**Distinguish "redact in output" from "redact in commit":**
+- Redact in output (`security.redact_secrets=true` for tool result text): YES, by default, to prevent accidental echo in chat history
+- Redact in commit (strip keys from `.env` before `git add`): NO, NEVER. The committed file IS the user's key store. Stripping it on commit destroys the user's configuration.
+
+When the user gives you a new API key and asks you to rotate it in `.env`, the action is: edit `.env` with the new value, stage it, commit it with a message naming the rotation (do NOT print the key in the commit message), push it. Stop.
+
 ## Style notes for this user (Maarten)
 
 - **Be direct and factual.** When asked "why did you remove X", show git evidence (commit hash, author, timestamp, diff). No defensive posturing, no "let me check" when the answer is in git history.
