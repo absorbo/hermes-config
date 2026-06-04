@@ -358,3 +358,58 @@ When Maarten says "I want to use model X, find the right slug", the answer is in
 **Why this rule (correction from 2026-06-04):** the user explicitly said "I do not know the kimi-k2.6 slug, this is the model I want to use. The exact slug is for you to investigate and to confirm." Asking the user to confirm a slug the agent can discover in 10 seconds is a token burn and a delegation reversal. The user's role is to state the model they want; the agent's role is to find the right way to address it.
 
 **Do NOT do this rule's job badly:** if the endpoint returns a model that doesn't match what the user asked for (e.g. user said "Kimi K2.6" but `/v1/models` returns only an unrelated `kimi-v1-128k`), surface the mismatch to the user — do not silently substitute.
+
+## 11. Three-class rule (what gets rsynced and committed — class-level hygiene)
+
+User directive 2026-06-04: "ensure no runtime and source files are rsynced or committed and pushed. But configs and changes need rsync, commit and push. Thank you." This is a class-level rule, not a one-off cleanup. Encode it here so every future session starts with the matrix already known.
+
+**The three classes of files in `~/.hermes/`:**
+
+| Class | Examples | rsync to mirror? | commit to vault or hermes-config? | commit to hermes-agent fork? |
+|---|---|---|---|---|
+| **Runtime state** | `auth.json`, `state.db*`, `kanban.db`, `gateway_state.json`, `channel_directory.json`, `.hermes_history`, `cron/jobs.json`, all `*_cache.json`, lock files, pid files, `.skills_prompt_snapshot.json` | NO (excluded) | NO | NO |
+| **Source program files** | `hermes-agent/` (upstream clone), `lsp/`, `venv/`, `node_modules/`, `bin/`, `package-lock.json` (inside hermes-agent), skill `.py` source | NO (excluded — lives in the hermes-agent git repo) | NO | YES (this is where source belongs) |
+| **Configs and changes** | `config.yaml`, profile configs, `SKILL.md` frontmatter + body, `MEMORY.md`, `USER.md`, `prefill.txt`, canonical patches under `patches/`, scripts under `scripts/`, cron definitions, vault customer docs | YES | YES | n/a (hermes-agent source lives elsewhere) |
+
+**Anti-patterns to refuse silently (and correct with the matrix above):**
+- Committing a runtime state file to any repo — it's not yours, it's the runtime's
+- Committing a source program file (e.g. an unstaged `package-lock.json` diff) to hermes-config or the vault mirror — it belongs in the hermes-agent source repo
+- Force-pushing runtime or source files via the rsync chain to "make the mirror match"
+- Trusting that a file's presence in `git status` makes it a candidate for commit — runtime files show up there too, by design
+
+**Verification (run before staging any change):**
+```bash
+cd ~/.hermes && git status --short | awk '{print $1, $2}' | sort -u
+# For each file, ask: config or change? → stage. Runtime or source? → skip.
+```
+
+**Why this rule is non-trivial:** the user has explicitly cited "clutter and unnecessary resource use" as the reason. A mirror that has 6 runtime files doesn't fail loudly; it just grows. The drift detector in the rsync exclusion list (see `references/hermes-mirror-rsync-exclusions.md`) catches the next drift, but the original accumulation took multiple sessions. The matrix above prevents the accumulation in the first place.
+
+## 12. No-forks rule (branch hygiene for the `absorbo/hermes-agent` fork)
+
+User directive 2026-06-04: "fix the fork, no forks please, not if it is not ABSOLUTELY necessary." The user is talking about temporary feature branches (`fix/2026-06-04-...`) on their `absorbo/hermes-agent` fork remote — NOT about the fork itself. The fork is necessary; the temporary branch is not.
+
+**Default:** when committing a small, self-contained fix (e.g. a 48-line patch to a single function in `hermes_cli/providers.py`), do NOT create a `fix/<date>-<topic>` branch on the fork remote. Put the commit directly on `main` (or fast-forward `main` to it via a local temp branch).
+
+**When a feature branch IS necessary (and the user will accept it):**
+- The fix depends on other unmerged work in a sibling branch on the same fork
+- Direct push would be non-fast-forward AND the divergence is large (hundreds of commits, a real merge would be needed)
+- The user has explicitly asked for a PR-review branch (e.g. to test CI before merging)
+
+**Recovery pattern when an unnecessary fix branch was created (verified 2026-06-04, providers fall-through):**
+1. `git checkout -b main-sync absorbo/main` (temp local branch from the fork's `main`)
+2. `git cherry-pick <fix-commit-sha>` (apply the single fix on top of fork's `main`)
+3. `git push absorbo main-sync:main` (non-FF push to fork's `main` — this is a normal non-FF push of a new commit, not a force-push)
+4. `git push absorbo --delete fix/<old-branch-name>` (delete the unnecessary branch on the fork remote)
+5. `git checkout main` (return to local tracking branch)
+6. `git branch -D main-sync fix/<old-branch-name>` (clean up local temp + old fix branch)
+
+**Verification after consolidation:**
+```bash
+git branch -r | grep -E 'fix/2026-' | wc -l
+# Expected: 0 (no current-year fix branches lingering on the fork)
+```
+
+**Anti-pattern:** creating a `fix/2026-06-04-providers-plugin-fallthrough` branch on the fork because local main is 1123 commits ahead of fork's main. The local divergence is real, but a single cherry-picked commit can land on fork's `main` cleanly without a long-lived feature branch. The branch was overhead; the user explicitly called it out.
+
+**Cross-reference:** see `fork-upstream-patching` skill for the *patch itself* and drift-detection cron. The no-forks rule here is about *how the patch lands*, not about *what the patch contains*.
