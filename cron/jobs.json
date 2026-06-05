@@ -45,49 +45,6 @@
       "workdir": null
     },
     {
-      "id": "0367b795f472",
-      "name": "Eisenhower Task Prioritizer",
-      "prompt": "Prioritize unprioritized `#task` items in the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nTasks:\n1. Use file tools only to find unprioritized `#task` items with no priority signifier: \ud83d\udd3a \u23eb \ud83d\udd3c \ud83d\udd3d \u23ec\ufe0f.\n2. Exclude files under `90 - Templates`, `99 - Archive`, `.obsidian`, `.trash`, and `Actieplan CyFUN compliance.md`.\n3. Read 5-10 lines of surrounding context for each task.\n4. Apply this logic:\n   - Deadline within 48h \u2192 \ud83d\udd3a Q1. Within 7d \u2192 \u23eb or \ud83d\udd3a depending on urgency.\n   - Compliance/audit/security folders \u2192 \u23eb Q2.\n   - Keywords `fix/broken/outage/incident/escalation/deadline/today` \u2192 \ud83d\udd3a.\n   - Keywords `plan/strategy/improve/build/audit/compliance` \u2192 \u23eb.\n   - Keywords `update/check/review/send/coordinate` \u2192 \ud83d\udd3c.\n   - Keywords `consider/maybe/someday` \u2192 \ud83d\udd3d.\n   - 30+ days open with no date \u2192 \ud83d\udd3d.\n   - Doubt \u2192 choose LOWER priority.\n5. Patch the task line to insert the signifier after the description and before any \ud83d\udcc5 date.\n6. Process all unprioritized tasks found.\n7. Report total processed and counts: Q1, Q2, Q3, Q4.\n\nConstraints: never delete files; never modify templates or archives; never fabricate context.\n\nOperational gate: Before changing anything: read relevant vault documentation and current target files, form a brief plan, then act and verify. Do not act first and check later.\nFinal output: concise status only (changed/created/skipped counts and blockers/errors). Do not include long evidence dumps unless something needs user attention.",
-      "skills": [
-        "obsidian",
-        "obsidian-markdown"
-      ],
-      "skill": "obsidian",
-      "model": null,
-      "provider": null,
-      "base_url": null,
-      "script": null,
-      "no_agent": false,
-      "context_from": null,
-      "schedule": {
-        "kind": "cron",
-        "expr": "0 5 * * *",
-        "display": "0 5 * * *"
-      },
-      "schedule_display": "0 5 * * *",
-      "repeat": {
-        "times": null,
-        "completed": 19
-      },
-      "enabled": true,
-      "state": "scheduled",
-      "paused_at": null,
-      "paused_reason": null,
-      "created_at": "2026-05-16T11:04:58.949707+02:00",
-      "next_run_at": "2026-06-05T05:00:00+02:00",
-      "last_run_at": "2026-06-04T05:06:37.171858+02:00",
-      "last_status": "ok",
-      "last_error": null,
-      "last_delivery_error": null,
-      "deliver": "local",
-      "origin": null,
-      "enabled_toolsets": [
-        "file",
-        "skills"
-      ],
-      "workdir": null
-    },
-    {
       "id": "7cfde4ccf71b",
       "name": "Morning Briefing \u2014 Email + Daily Note",
       "prompt": "Create the daily Morning Briefing for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nImportant paths:\n- Daily note: `01 - Daily Notes/YYYY-MM-DD.md` for today's local date.\n- Daily note template: `90 - Templates/Daily Note.md`.\n- Gmail script: `/Users/absorbo/.hermes/skills/productivity/google-workspace/scripts/google_api.py`.\n- M365 script: `/Users/absorbo/.hermes/skills/productivity/m365-graph/scripts/m365_graph_mail.py`.\n- Python: `/Users/absorbo/.hermes/hermes-agent/venv/bin/python3`.\n\n## NEW \u2014 Yesterday's Follow-Up Notes (DO FIRST)\nBefore writing the briefing:\n1. Read yesterday's daily note (`01 - Daily Notes/YYYY-MM-DD.md` for yesterday).\n2. Check if it contains a `## \ud83d\udcdd End-of-Day Feedback` section with actual content (not just the placeholder line).\n3. If yes:\n   - Extract customer-relevant observations and follow-ups from the EOD feedback.\n   - Create a `## \ud83d\udccc Yesterday's Follow-Up Notes` section in TODAY's daily note.\n   - Include only customer-relevant items: blockers, observations, action items, or anything Maarten flagged as needing attention.\n   - Omit purely personal/mood reflections unless they affect customer work.\n   - Format as a bulleted list with customer tags where applicable.\n4. If no EOD feedback exists, skip this section entirely.\n\n## Email Briefing (existing)\n5. Create today's daily note from the template if it does not exist. Substitute template placeholders with actual values; do not write literal `{{...}}` placeholders.\n6. Fetch unread Gmail with query `is:unread`, max 30.\n7. Fetch unread M365 mail by listing recent inbox messages and filtering `isRead == false`, max 30. If M365 search is unavailable, use list + Python filtering.\n8. Email resilience: if Gmail fails, continue with M365. If M365 fails, continue with Gmail. If both fail, write that email is unavailable.\n9. Triage emails into: \ud83d\udd3a Action Required, \u23eb Important, \ud83d\udd3c FYI, \ud83d\udd3d Ignored.\n10. For \ud83d\udd3a and \u23eb emails, read full message/thread where safe and cross-reference vault for customer/project context.\n11. Write briefing only inside the `## \ud83d\udcec Morning Briefing` section of today's daily note.\n12. Draft reply text in the note when useful, but do not send any email.\n\n## Draft Replies\n13. For \ud83d\udd3a Action Required and \u23eb Important emails: create reply DRAFTS.\n    - First analyze Maarten's writing style from sent items. M365: list-sent --top 20. Gmail: search recent sent.\n    - Maarten's style: 'Hallo,' for Dutch/Flemish, 'Hello,' for English. Sign-off: 'Mvg,' then 'Maarten'. Mobile sig: 'Sent with a mobile device, please forgive typos and brievity.' Direct, warm, concise.\n    - Draft each reply in his voice. The reply should help his decisions and time \u2014 not pro-forma.\n    - NEVER DELETE. NEVER SEND. DRAFTS ONLY.\n    - UNIFIED DRAFT CREATION (same outcome for both platforms):\n      \u2022 M365: python3 M365_SCRIPT create-draft --to RECIPIENT --subject 'Re: SUBJECT' --body 'BODY'\n      \u2022 Gmail: python3 GMAIL_SCRIPT gmail create-draft --to RECIPIENT --subject 'Re: SUBJECT' --body 'BODY'\n      Both produce a Draft in the Drafts folder. Same result, same workflow.\n\nTASK TAGGING RULE:\n- Every actionable item in the \ud83d\udd3a Action Required and \u23eb Important sections MUST use `- [ ] #task <description>` format with Obsidian Tasks plugin syntax.\n- If a task relates to a known customer (Delvaux, Verlinfo, Groep Brugge, CAPAC-HVW, etc.), include the customer name in the description so it can be searched/grouped.\n- For customer-specific tasks, include `#task` followed by priority signifier and any relevant due date: `- [ ] #task <description> \ud83d\udd3a \ud83d\udcc5 YYYY-MM-DD`\n- Personal/non-customer tasks also need `#task` tag: `- [ ] #task <personal task description>`\n- This ensures all tasks appear in the `## Tasks by Customer` query in the daily note.\n\nHard constraints:\n- \u26d4 NEVER delete email. EVER. No exceptions. Not trash, not deleted items.\n- \u26d4 NEVER send email. Draft text only.\n- \u26d4 NEVER modify email labels, read state, folders, or metadata.\n- \u26d4 NEVER assume context; use `[CONFIRM: ...]` placeholders for uncertainty.\n- \u26d4 NEVER modify content outside `## \ud83d\udcec Morning Briefing` and `## \ud83d\udccc Yesterday's Follow-Up Notes`.\n- \u26d4 NEVER modify templates or archives.\n\nFinal output: concise status only (changed/created/skipped counts and blockers/errors). Do not include long evidence dumps unless something needs user attention.\n\nOperational gate: Before changing anything: read relevant vault documentation and current target files, form a brief plan, then act and verify. Do not act first and check later.",
@@ -831,5 +788,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-04T18:28:14.443762+02:00"
+  "updated_at": "2026-06-05T15:53:22.006873+02:00"
 }

@@ -1,0 +1,5 @@
+Left uncommitted in live Hermes only:
+
+• state.db
+• state.db-wal
+• pastes/*

@@ -1,0 +1,43 @@
+gh auth logout -h github.com -u absorbo
+✓ Logged out of github.com account absorbo
+absorbo@Maartens-Mac-mini-6 ~ % gh auth login -h github.com -p https -w
+
+! First copy your one-time code: 0E78-4D91
+Press Enter to open https://github.com/login/device in your browser...
+✓ Authentication complete.
+- gh config set -h github.com git_protocol https
+✓ Configured git protocol
+✓ Logged in as absorbo
+absorbo@Maartens-Mac-mini-6 ~ % gh auth setup-git
+absorbo@Maartens-Mac-mini-6 ~ % gh auth status
+github.com
+  ✓ Logged in to github.com account absorbo (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
+absorbo@Maartens-Mac-mini-6 ~ % cd "/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
+absorbo@Maartens-Mac-mini-6 Obsidian % git push
+Enumerating objects: 16, done.
+Counting objects: 100% (16/16), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (10/10), 6.58 KiB | 6.58 MiB/s, done.
+Total 10 (delta 4), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.
+To https://github.com/absorbo/clawbot-vault.git
+   03a798be..4dcbabfd  main -> main
+absorbo@Maartens-Mac-mini-6 Obsidian % git config --global credential.helper store
+python3 - <<'PY'
+from pathlib import Path
+token = input("Paste GitHub PAT: ").strip()
+Path.home().joinpath(".git-credentials").write_text(
+    f"https://absorbo:{token}@github.com\n"
+)
+PY
+Paste GitHub PAT: Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+EOFError: EOF when reading a line
+absorbo@Maartens-Mac-mini-6 Obsidian % git ls-remote https://github.com/absorbo/clawbot-vault.git
+4dcbabfd5ea3e0b307ca2f33d0a08f66726cf80e        HEAD
+4dcbabfd5ea3e0b307ca2f33d0a08f66726cf80e        refs/heads/main

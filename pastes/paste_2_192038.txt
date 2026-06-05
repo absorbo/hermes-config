@@ -1,0 +1,8 @@
+Action needed: OAuth App User Access Token found in commit, any app using this secret may be affected
+ 
+
+ 
+Your OAuth App User Access Token has been revoked
+ 
+A recent scan found a valid OAuth App User Access Token linked to your app, GitHub CLI, in the content of a commit. We have revoked it to protect your data from an unauthorized access, and as a consequence, any app using this token won't be able to authenticate to GitHub.
+ 

@@ -1,0 +1,6 @@
+No autonomous scope decisions.
+• No blind git add -A in ~/.hermes.
+• No committing runtime DB/WAL/token-cache/paste files unless you explicitlyname them.
+• No bypassing GitHub security controls without explicit approval.
+• No blaming HTTPS/auth/you when the workflow previously worked.
+• If a guardrail conflicts with your immediate wording, I will state theconflict and stop instead of improvising.

@@ -1,6 +1,6 @@
 # Cron Pipeline State
 
-> Last refreshed: 2026-06-04 from `cronjob(action='list')`.
+> Last refreshed: 2026-06-05 from `cronjob(action='list')`.
 
 ## Full Pipeline (Execution Order)
 
@@ -9,7 +9,6 @@
 | 02:00 daily | `ee8485f40c09` | Providers Patch Drift Check | (none) | local | (no_agent script) | ok |
 | 03:00 daily | `b264e586aa4d` | GraphWeaver — MOC Integrity Audit | obsidian, obsidian-markdown | local | terminal, file, skills | ok |
 | 04:00 daily | `7cfde4ccf71b` | Morning Briefing — Email + Daily Note | obsidian, obsidian-markdown, google-workspace, m365-graph | local | terminal, file, skills, web | ok |
-| 05:00 daily | `0367b795f472` | Eisenhower Task Prioritizer | obsidian, obsidian-markdown | local | file, skills | ok |
 | 06:00 daily | `2ebe21e75e8a` | Meeting Brief Generator | obsidian, obsidian-markdown, m365-graph, google-workspace | local | not pinned | ok |
 | 06:20 daily | `4d1be69dd3f7` | Backlink Curator | script-only | local | terminal | ok |
 | 07:00 Mondays | `7eef85853197` | Invoice & Payment Tracker | obsidian, obsidian-markdown, m365-graph, google-workspace, ocr-and-documents | local | not pinned | ok |

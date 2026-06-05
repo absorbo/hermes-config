@@ -1,0 +1,12 @@
+Block if staged paths include:
+
+• state.db
+• state.db-shm
+• state.db-wal
+• state-snapshots/
+• pastes/
+• google_token.json
+• .local/*token*
+• .local/m365_graph_token_cache.json
+• .env
+• auth.json

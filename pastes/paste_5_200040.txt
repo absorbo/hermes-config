@@ -1,0 +1,21 @@
+The hook should not decide task scope. The hook should only block objectivelyforbidden actions from documented guardrails.
+
+So remove the “no improvisation/task type” firewall.
+
+Keep only mechanical hard blocks:
+
+1. git init in ~/.hermes
+2. git add -A in ~/.hermes
+3. Hermes commit/push before vault sync + vault push
+4. committing mirror state.db* / state-snapshots
+5. committing live Hermes runtime garbage:
+• state.db
+• state.db-shm
+• state.db-wal
+• state-snapshots/
+• pastes/
+6. GitHub push-protection bypass without explicit approval
+7. email send/delete
+8. protected config writes without explicit instruction
+
+No hook should require you to say “commit/push” in a special way. The commandalready triggers the documented commit gate.

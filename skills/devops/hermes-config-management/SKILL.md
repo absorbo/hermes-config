@@ -398,7 +398,18 @@ Three concrete failures from the auth.json tracking fix that future sessions wil
 
 **3. Mirror staleness is only caught for 3 files.** The vault's pre-commit hook (`<vault>/.git/hooks/pre-commit`) only checks `config.yaml`, `SOUL.md`, and `prefill.txt` for mirror staleness. If you change any OTHER file in `~/.hermes/` (e.g. `auth.json`, a SKILL.md, `.gitignore`), the hook will pass even if the mirror is stale on those. **Implication:** for the 3 critical files, the rsync is mechanically gated. For everything else, the agent is responsible for syncing the mirror before committing — either via canonical rsync (broad) or `cp <src> <mirror>` (surgical). (Verified when committing `auth.json` to vault: hook passed with no critical files in the commit, even though the mirror had a stale `.gitignore` that I fixed inline.)
 
-## 12. No-forks rule (branch hygiene for the `absorbo/hermes-agent` fork)
+## 12. Cancellation cleanup scope — FOUR places, not one (added 2026-06-05)
+
+When the user cancels a system (e.g. Eisenhower Matrix on 2026-05-03, repeatedly re-introduced through `deae532` and `9f58a1b`), the cleanup must touch all of these — not just the vault docs the user can see:
+
+1. **Vault docs** (visible to the user): `05 - AI/...`, `10 - Customers/...`, customer overviews, templates, MOCs. Done by sed/`patch` and committed to clawbot-vault.git. The 2026-06-05 cleanup hit this with commit `898d6ac` (445 files, 935 deletions).
+2. **Active cron job** in `~/.hermes/cron/jobs.json` AND the mirror at `<vault>/05 - AI/99 - Hermes/cron/jobs.json`. Use `cronjob action=remove` (NOT `pause` — pause is for short-term holds, not for cancelled systems; see `cron-pipeline` pitfall 10). Verified 2026-06-05: cron `0367b795f472` (Eisenhower Task Prioritizer, 05:00) was still active after the vault cleanup because the user had not yet authorized removal.
+3. **Source skill files** at `~/.hermes/skills/<category>/<skill>/references/<file>.md` AND per-profile overlays at `~/.hermes/profiles/<name>/skills/...` (the latter holds **5,651 files across 4 profiles** — sweeping only `~/.hermes/skills/` is ~0.2% of the surface). After editing, `rsync -av --delete ~/.hermes/ "<vault>/05 - AI/99 - Hermes/"` regenerates the mirror. Verified 2026-06-05: `~/.hermes/skills/note-taking/obsidian/references/tasks-eisenhower-audit.md` and the per-profile skill overlays still reference Eisenhower; mirror edits in the vault commit are transient and will be overwritten on next rsync.
+4. **MEMORY entry** recording the cancellation. The user explicitly said "we cancelled that weeks ago" — that fact must persist in MEMORY so the next session's 50/50 cancellation check (see `execution-discipline` anti-pattern 2o) can find it. The 2026-06-05 session added a "50/50 cancellation trap" MEMORY entry covering this.
+
+The class-level rule: **scoped vault cleanup is a category error.** Cancelled-system cleanup is a system-wide operation, and the user must see the full scope (1-4) before execution starts. When the user says "fix it" for a cancelled system, surface the full scope explicitly: "the fix touches 4 places — vault docs (visible), cron job (operational), source skills (operational), and MEMORY (durable). Do you want all four, or just (1)?" The user's standing rule is: never start a cancellation cleanup without scope confirmation across all four axes.
+
+## 13. No-forks rule (branch hygiene for the `absorbo/hermes-agent` fork)
 
 User directive 2026-06-04: "fix the fork, no forks please, not if it is not ABSOLUTELY necessary." The user is talking about temporary feature branches (`fix/2026-06-04-...`) on their `absorbo/hermes-agent` fork remote — NOT about the fork itself. The fork is necessary; the temporary branch is not.
 

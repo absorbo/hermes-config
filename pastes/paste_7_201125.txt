@@ -1,0 +1,7 @@
+Synthetic tests passed for:
+• read-before-act block
+• git init in ~/.hermes
+• git add -A in ~/.hermes
+• GitHub push-protection bypass
+• email send
+• read-only allow

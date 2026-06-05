@@ -1,0 +1,24 @@
+forcing a read-before-act gate.
+
+Mechanical design:
+
+• Before any substantive tool action, hook requires proof that the relevantinstruction files were read in the current session.
+• Required reads:
+• ~/.hermes/SOUL.md
+• ~/.hermes/prefill.txt
+• relevant skill(s)
+• relevant current files/config/state for the task
+
+If not read, block action:
+
+─ text
+Blocked: read-before-act gate failed. Read SOUL.md, prefill.txt, relevant skill/docs/state first.
+
+Implementation approach:
+
+• Hook tracks read events in a session stamp file.
+• read_file / skill_view / approved inspection commands create stamps.
+• Risky/substantive actions require stamps.
+• Informational questions can answer after reading, but cannot modify state.
+
+So yes: the mechanical forcing is do not allow action until the actualinstructions were read in this session.

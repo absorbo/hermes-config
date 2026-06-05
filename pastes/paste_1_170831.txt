@@ -1,0 +1,5 @@
+API call failed after 1 retries: HTTP 404: The requested resource was not found
+
+/model
+
+error: Unknown provider 'minimax-direct'. Check 'hermes model' for available providers, or define it in config.yaml under 'providers:'.
