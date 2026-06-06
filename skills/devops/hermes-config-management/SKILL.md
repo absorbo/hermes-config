@@ -263,7 +263,53 @@ The user's repository policy intentionally commits credential files (`.env`, `au
 - Redact in output (`security.redact_secrets=true` for tool result text): YES, by default, to prevent accidental echo in chat history
 - Redact in commit (strip keys from `.env` before `git add`): NO, NEVER. The committed file IS the user's key store. Stripping it on commit destroys the user's configuration.
 
-When the user gives you a new API key and asks you to rotate it in `.env`, the action is: edit `.env` with the new value, stage it, commit it with a message naming the rotation (do NOT print the key in the commit message), push it. Stop.
+**Cross-reference:** see `fork-upstream-patching` skill for the *patch itself* and drift-detection cron. The no-forks rule here is about *how the patch lands*, not about *what the patch contains*.
+
+## 14. Use `hermes config set` for LLM provider keys — not direct .env edits
+
+When the user says "rotate the Kimi key," "configure the Moonshot endpoint," or otherwise asks to modify a provider's API key or base URL, use the **hermes-managed path** — `hermes config set` — not direct `~/.hermes/.env` edits.
+
+**User standing rule (2026-06-06):** *"I do NOT want to re-edit env files manually, I want you to do it via Hermes commands or plugin."* This applies to LLM provider keys, base URLs, model defaults, and any other config that another app watches (e.g. `~/.kimi-code/config.toml`, the kimi-coding plugin resolver, EXA search backend).
+
+**Why this rule exists:**
+
+- Direct `.env` edits can break other apps that watch the file. The user runs both the kimi-coding plugin (watches `~/.hermes/.env` for `KIMI_API_KEY` + `KIMI_BASE_URL`) and the kimi-code CLI (watches `~/.kimi-code/config.toml`). A manual edit to `.env` that adds `MOONSHOT_API_KEY` and a new `MOONSHOT_BASE_URL` can be picked up by the kimi-coding plugin's resolver in a way the user did not intend, silently breaking the Kimi Code path. The user's verbatim complaint: "Why are yu breaking another kimi app now."
+- The official Kimi integration guide (https://www.kimi.com/resources/hermes-agent-api-integration) prescribes `hermes config set MOONSHOT_API_KEY <key>` and `hermes config set HERMES_MODEL moonshot/kimi-k2.6`. The user expects this path.
+- `hermes config set` writes to `config.yaml` (the structured config), runs the gateway restart hooks, and is a single source of truth. Direct `.env` edits require manual `hermes gateway restart` to take effect and can drift from what `hermes config get` reports.
+
+**The canonical pattern (verified 2026-06-06):**
+
+```bash
+# Moonshot AI path
+hermes config set MOONSHOT_API_KEY <key>
+hermes config set MOONSHOT_BASE_URL https://api.moonshot.ai/v1
+hermes config set HERMES_MODEL moonshot/kimi-k2.6
+
+# Kimi Code path
+hermes config set KIMI_API_KEY <key>
+hermes config set KIMI_BASE_URL https://api.kimi.com/coding
+hermes config set HERMES_MODEL kimi-k2.6
+
+# Other providers
+hermes config set GEMINI_API_KEY <key>
+hermes config set OPENAI_API_KEY <key>
+hermes config set EXA_API_KEY <key>
+```
+
+**Anti-pattern (verified 2026-06-06):** When the user said "use api.moonshot.ai/v1 with the existing KIMI key, do as instructed," the agent:
+
+1. Ran `cat >> ~/.hermes/.env` to append `MOONSHOT_API_KEY=...` and `MOONSHOT_BASE_URL=...` lines
+2. The kimi-coding plugin's resolver read the new env vars with the wrong base URL
+3. The user (rightfully) complained: *"you really are a moron. Why are yu breaking another kimi app now. Breaking yourself is not good enough?"*
+
+The correct response to the same instruction would have been `hermes config set MOONSHOT_API_KEY $KIMI_API_KEY` and `hermes config set MOONSHOT_BASE_URL https://api.moonshot.ai/v1` — the exact commands the Kimi docs prescribe. Then `hermes gateway restart` and verify with `hermes config get MOONSHOT_API_KEY` + `hermes doctor`.
+
+**If `hermes config set` does not handle the specific config the user wants changed** (e.g. some custom env var that `config.yaml` does not know about), surface the gap explicitly and ask which method. Do NOT silently default to direct `.env` edits.
+
+**Companion reads:**
+- `references/kimi-coding-provider-quirks.md` — key-prefix/endpoint matrix, slug-vs-model-id trap, smoke-test recipe
+- `execution-discipline/references/kimi-moonshot-endpoint-quirks.md` — runtime auto-detect, User-Agent requirement, rate-limit-window 401/429 oscillation that makes standalone curl probes unreliable
+- `execution-discipline` anti-pattern 2t + the "TOP-LEVEL EXECUTION RULES" section at the top of that skill
 
 ## Style notes for this user (Maarten)
 

@@ -7,6 +7,7 @@ custom_providers: []
 fallback_providers:
 - provider: kimi-coding
   model: kimi-k2.6
+  base_url: https://api.kimi.com/coding
 - provider: freellmapi
   model: auto
 - provider: fatman-ollama

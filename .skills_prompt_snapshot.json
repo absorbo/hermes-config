@@ -298,16 +298,16 @@
       1406
     ],
     "devops/cron-pipeline/SKILL.md": [
-      1780668000317065230,
-      5430
+      1780748859118233992,
+      10309
     ],
     "devops/fork-upstream-patching/SKILL.md": [
       1780714575068418040,
       14875
     ],
     "devops/hermes-config-management/SKILL.md": [
-      1780667618087310682,
-      40243
+      1780752303095892212,
+      43923
     ],
     "devops/maarten-implementation-protocol/SKILL.md": [
       1780528617048601362,
@@ -361,9 +361,13 @@
       1780074903454958737,
       14326
     ],
+    "graphify/SKILL.md": [
+      1780752300989598961,
+      36355
+    ],
     "hermes-operations/execution-discipline/SKILL.md": [
-      1780669150633941376,
-      36176
+      1780752302002800662,
+      41289
     ],
     "hermes-operations/hermes-shell-hooks/SKILL.md": [
       1780511230400080309,
@@ -462,8 +466,8 @@
       38775
     ],
     "obsidian/eod-feedback-capture/SKILL.md": [
-      1780585906682814483,
-      7542
+      1780740594564772421,
+      12731
     ],
     "pdf-text-extraction/SKILL.md": [
       1780714037585997847,
@@ -2114,6 +2118,19 @@
       }
     },
     {
+      "skill_name": "graphify",
+      "category": "graphify",
+      "frontmatter_name": "graphify",
+      "description": "Use for any question about a codebase, its architecture, ...",
+      "platforms": [],
+      "conditions": {
+        "fallback_for_toolsets": [],
+        "requires_toolsets": [],
+        "fallback_for_tools": [],
+        "requires_tools": []
+      }
+    },
+    {
       "skill_name": "execution-discipline",
       "category": "hermes-operations",
       "frontmatter_name": "execution-discipline",
@@ -2146,7 +2163,7 @@
       "skill_name": "kanban-system",
       "category": "kanban-system",
       "frontmatter_name": "kanban-system",
-      "description": "Hermes Kanban multi-agent system — shared lifecycle plus ...",
+      "description": "",
       "platforms": [
         "linux",
         "macos",
