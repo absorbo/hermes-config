@@ -250,7 +250,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:45.022995+02:00",
-      "next_run_at": "2026-06-06T17:00:00+02:00",
+      "next_run_at": "2026-06-07T17:00:00+02:00",
       "last_run_at": "2026-06-03T17:20:24.404302+02:00",
       "last_status": "ok",
       "last_error": null,
@@ -294,7 +294,7 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:46.029675+02:00",
-      "next_run_at": "2026-06-06T17:15:00+02:00",
+      "next_run_at": "2026-06-07T17:15:00+02:00",
       "last_run_at": "2026-06-03T17:21:36.352362+02:00",
       "last_status": "ok",
       "last_error": null,
@@ -866,5 +866,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-06T14:13:34.539020+02:00"
+  "updated_at": "2026-06-06T19:27:31.708315+02:00"
 }
