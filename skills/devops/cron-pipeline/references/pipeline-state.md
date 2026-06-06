@@ -11,7 +11,7 @@
 | 04:00 daily | `7cfde4ccf71b` | Morning Briefing — Email + Daily Note | obsidian, obsidian-markdown, google-workspace, m365-graph | local | terminal, file, skills, web | ok |
 | 06:00 daily | `2ebe21e75e8a` | Meeting Brief Generator | obsidian, obsidian-markdown, m365-graph, google-workspace | local | not pinned | ok |
 | 06:20 daily | `4d1be69dd3f7` | Backlink Curator | script-only | local | terminal | ok |
-| 07:00 Mondays | `7eef85853197` | Invoice & Payment Tracker | obsidian, obsidian-markdown, m365-graph, google-workspace, ocr-and-documents | local | not pinned | ok |
+| 07:00 Mondays | `7eef85853197` | Invoice & Payment Tracker | obsidian, obsidian-markdown, m365-graph, google-workspace, pdf-text-extraction | local | not pinned | ok |
 | 08:00 Mondays | `061e346ad4a6` | Content Pipeline — Monday Horizon Review | obsidian, obsidian-markdown, profile-routing | local | file, terminal, skills | ok |
 | 08:00 Tuesdays | `5bdd3c84e4f9` | Content Pipeline — Tuesday Draft | obsidian, obsidian-markdown, profile-routing | local | file, terminal, skills, web | ok |
 | 08:00 Wednesdays | `9cd866abf255` | Content Pipeline — Wednesday Draft | obsidian, obsidian-markdown, profile-routing | local | file, terminal, skills, web | ok |

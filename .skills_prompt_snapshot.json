@@ -1,25 +1,9 @@
 {
   "version": 1,
   "manifest": {
-    "apple/apple-notes/SKILL.md": [
-      1778890501909061556,
-      2169
-    ],
-    "apple/apple-reminders/SKILL.md": [
-      1780134897706695947,
-      3606
-    ],
-    "apple/findmy/SKILL.md": [
-      1778890501909209680,
-      3709
-    ],
-    "apple/imessage/SKILL.md": [
-      1778890501909292721,
-      2442
-    ],
-    "apple/macos-computer-use/SKILL.md": [
-      1778890501909378054,
-      7309
+    "apple-macos-services/SKILL.md": [
+      1780714125785878147,
+      17931
     ],
     "autonomous-ai-agents/claude-code/SKILL.md": [
       1778890501909582845,
@@ -34,7 +18,7 @@
       3774
     ],
     "autonomous-ai-agents/kanban-codex-lane/SKILL.md": [
-      1779218444900027163,
+      1780714420601405996,
       12774
     ],
     "autonomous-ai-agents/opencode/SKILL.md": [
@@ -314,24 +298,16 @@
       1406
     ],
     "devops/cron-pipeline/SKILL.md": [
-      1780667497126957694,
-      5465
+      1780668000317065230,
+      5430
     ],
     "devops/fork-upstream-patching/SKILL.md": [
-      1780592323376083991,
-      14868
+      1780714575068418040,
+      14875
     ],
     "devops/hermes-config-management/SKILL.md": [
       1780667618087310682,
       40243
-    ],
-    "devops/kanban-orchestrator/SKILL.md": [
-      1780591038144053582,
-      15831
-    ],
-    "devops/kanban-worker/SKILL.md": [
-      1780591038144174583,
-      10979
     ],
     "devops/maarten-implementation-protocol/SKILL.md": [
       1780528617048601362,
@@ -386,12 +362,20 @@
       14326
     ],
     "hermes-operations/execution-discipline/SKILL.md": [
-      1780667689576629824,
-      30156
+      1780669150633941376,
+      36176
     ],
     "hermes-operations/hermes-shell-hooks/SKILL.md": [
       1780511230400080309,
       11286
+    ],
+    "kanban-system/SKILL.md": [
+      1780714229288379710,
+      24691
+    ],
+    "mcp-server-design/SKILL.md": [
+      1780713933930154342,
+      13343
     ],
     "mcp/native-mcp/SKILL.md": [
       1778890501935099262,
@@ -470,24 +454,20 @@
       5367
     ],
     "note-taking/obsidian/SKILL.md": [
-      1780373593649378065,
-      13634
-    ],
-    "note-taking/ocr-scanned-pdfs/SKILL.md": [
-      1779877382254270024,
-      3241
+      1780667999118295706,
+      13322
     ],
     "note-taking/vault-documentation-stewardship/SKILL.md": [
-      1780667542128696358,
-      38771
-    ],
-    "obsidian-vendor-takeover/SKILL.md": [
-      1780607474135499703,
-      12435
+      1780668003625490340,
+      38775
     ],
     "obsidian/eod-feedback-capture/SKILL.md": [
       1780585906682814483,
       7542
+    ],
+    "pdf-text-extraction/SKILL.md": [
+      1780714037585997847,
+      11529
     ],
     "productivity/airtable/SKILL.md": [
       1778890501940013821,
@@ -517,10 +497,6 @@
       1778890501941194732,
       14597
     ],
-    "productivity/ocr-and-documents/SKILL.md": [
-      1779207040499623843,
-      7161
-    ],
     "productivity/powerpoint/SKILL.md": [
       1778890501941701688,
       9298
@@ -534,8 +510,8 @@
       19509
     ],
     "research/arxiv/SKILL.md": [
-      1778890501946874746,
-      10085
+      1780714491661472214,
+      10091
     ],
     "research/blogwatcher/SKILL.md": [
       1778890501947042703,
@@ -644,14 +620,6 @@
     "software-development/maestro-verify/SKILL.md": [
       1779539310563342888,
       7807
-    ],
-    "software-development/mcp-builder/SKILL.md": [
-      1779539310569571382,
-      9092
-    ],
-    "software-development/mcp-for-agents/SKILL.md": [
-      1779539310575383666,
-      7529
     ],
     "software-development/node-inspect-debugger/SKILL.md": [
       1779539310578631727,
@@ -828,70 +796,10 @@
   },
   "skills": [
     {
-      "skill_name": "apple-notes",
-      "category": "apple",
-      "frontmatter_name": "apple-notes",
-      "description": "Manage Apple Notes via memo CLI: create, search, edit.",
-      "platforms": [
-        "macos"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "apple-reminders",
-      "category": "apple",
-      "frontmatter_name": "apple-reminders",
-      "description": "Apple Reminders via remindctl: add, list, complete.",
-      "platforms": [
-        "macos"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "findmy",
-      "category": "apple",
-      "frontmatter_name": "findmy",
-      "description": "Track Apple devices/AirTags via FindMy.app on macOS.",
-      "platforms": [
-        "macos"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "imessage",
-      "category": "apple",
-      "frontmatter_name": "imessage",
-      "description": "Send and receive iMessages/SMS via the imsg CLI on macOS.",
-      "platforms": [
-        "macos"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "macos-computer-use",
-      "category": "apple",
-      "frontmatter_name": "macos-computer-use",
-      "description": "Drive the macOS desktop in the background — screenshots, ...",
+      "skill_name": "apple-macos-services",
+      "category": "apple-macos-services",
+      "frontmatter_name": "apple-macos-services",
+      "description": "Apple/macOS platform integration — Notes, Reminders, Find...",
       "platforms": [
         "macos"
       ],
@@ -1992,40 +1900,6 @@
       }
     },
     {
-      "skill_name": "kanban-orchestrator",
-      "category": "devops",
-      "frontmatter_name": "kanban-orchestrator",
-      "description": "Decomposition playbook + anti-temptation rules for an orc...",
-      "platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "kanban-worker",
-      "category": "devops",
-      "frontmatter_name": "kanban-worker",
-      "description": "Pitfalls, examples, and edge cases for Hermes Kanban work...",
-      "platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
       "skill_name": "maarten-implementation-protocol",
       "category": "devops",
       "frontmatter_name": "maarten-implementation-protocol",
@@ -2261,6 +2135,36 @@
         "macos",
         "linux"
       ],
+      "conditions": {
+        "fallback_for_toolsets": [],
+        "requires_toolsets": [],
+        "fallback_for_tools": [],
+        "requires_tools": []
+      }
+    },
+    {
+      "skill_name": "kanban-system",
+      "category": "kanban-system",
+      "frontmatter_name": "kanban-system",
+      "description": "Hermes Kanban multi-agent system — shared lifecycle plus ...",
+      "platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "conditions": {
+        "fallback_for_toolsets": [],
+        "requires_toolsets": [],
+        "fallback_for_tools": [],
+        "requires_tools": []
+      }
+    },
+    {
+      "skill_name": "mcp-server-design",
+      "category": "mcp-server-design",
+      "frontmatter_name": "mcp-server-design",
+      "description": "Design and build MCP (Model Context Protocol) servers for...",
+      "platforms": [],
       "conditions": {
         "fallback_for_toolsets": [],
         "requires_toolsets": [],
@@ -2589,19 +2493,6 @@
       }
     },
     {
-      "skill_name": "ocr-scanned-pdfs",
-      "category": "note-taking",
-      "frontmatter_name": "ocr-scanned-pdfs",
-      "description": "Batch OCR scanned PDF documents to searchable Markdown us...",
-      "platforms": [],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
       "skill_name": "vault-documentation-stewardship",
       "category": "note-taking",
       "frontmatter_name": "vault-documentation-stewardship",
@@ -2617,10 +2508,10 @@
       }
     },
     {
-      "skill_name": "obsidian-vendor-takeover",
-      "category": "obsidian-vendor-takeover",
-      "frontmatter_name": "obsidian-vendor-takeover",
-      "description": "Take ownership of a third-party plugin, vendor dir, or or...",
+      "skill_name": "eod-feedback-capture",
+      "category": "obsidian",
+      "frontmatter_name": "eod-feedback-capture",
+      "description": "Capture Maarten's end-of-day feedback, update timesheets ...",
       "platforms": [],
       "conditions": {
         "fallback_for_toolsets": [],
@@ -2630,11 +2521,15 @@
       }
     },
     {
-      "skill_name": "eod-feedback-capture",
-      "category": "obsidian",
-      "frontmatter_name": "eod-feedback-capture",
-      "description": "Capture Maarten's end-of-day feedback, update timesheets ...",
-      "platforms": [],
+      "skill_name": "pdf-text-extraction",
+      "category": "pdf-text-extraction",
+      "frontmatter_name": "pdf-text-extraction",
+      "description": "Extract text from PDFs and scanned documents — pymupdf fo...",
+      "platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
       "conditions": {
         "fallback_for_toolsets": [],
         "requires_toolsets": [],
@@ -2750,23 +2645,6 @@
       "category": "productivity",
       "frontmatter_name": "notion",
       "description": "Notion API + ntn CLI: pages, databases, markdown, Workers.",
-      "platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "ocr-and-documents",
-      "category": "productivity",
-      "frontmatter_name": "ocr-and-documents",
-      "description": "Extract text from PDFs/scans (pymupdf, marker-pdf).",
       "platforms": [
         "linux",
         "macos",
@@ -3219,32 +3097,6 @@
       "category": "software-development",
       "frontmatter_name": "maestro-verify",
       "description": "The canonical verification protocol for any task in a mae...",
-      "platforms": [],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "mcp-builder",
-      "category": "software-development",
-      "frontmatter_name": "mcp-builder",
-      "description": "Guide for creating high-quality MCP (Model Context Protoc...",
-      "platforms": [],
-      "conditions": {
-        "fallback_for_toolsets": [],
-        "requires_toolsets": [],
-        "fallback_for_tools": [],
-        "requires_tools": []
-      }
-    },
-    {
-      "skill_name": "mcp-for-agents",
-      "category": "software-development",
-      "frontmatter_name": "mcp-for-agents",
-      "description": "Designs or reviews MCP servers so AI agents can use them ...",
       "platforms": [],
       "conditions": {
         "fallback_for_toolsets": [],
