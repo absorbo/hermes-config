@@ -22,8 +22,9 @@ platforms: [macos, linux]
 `~/.hermes/cron/jobs.json`, `gateway_state.json`, `processes.json`, `auth.json`, SKILL.md files, scripts/, etc. are live state the runtime OR the user edits in `~/.hermes/`. The vault mirror exists for two reasons: (1) the SOUL.md commit gate requires the mirror to be in sync before pushing hermes-config, (2) the user wants their operational state visible in Obsidian.
 
 ```bash
-# The canonical sync. Exclude runtime-written blobs and secrets-bearing files
-# that the vault mirror does not need.
+# The canonical sync. Excludes runtime-written blobs (state.db, sessions, logs)
+# and transient revert markers. Does NOT exclude .env / auth.json — see
+# pitfall 4: this vault's security.redact_secrets is false, keys are committed.
 rsync -av \
   --exclude='state.db*' \
   --exclude='state-snapshots/' \
@@ -31,7 +32,6 @@ rsync -av \
   --exclude='logs/' \
   --exclude='hermes-agent/' \
   --exclude='venv/' \
-  --exclude='.env' \
   --exclude='.env.pre-revert.*' \
   --exclude='cron/output/' \
   ~/.hermes/ \
@@ -67,10 +67,11 @@ If you think you need to rsync between the two repos, you don't. Either:
 | 1 | `rsync --delete` with wrong direction | Source becomes dest, dest becomes source. Live state gets overwritten by stale mirror. Verified 2026-06-06. |
 | 2 | `rsync --include cron/output/` | 3 log files destroyed 2026-06-06. Exclude the entire `output/` subdir — those are runtime logs the scheduler writes. |
 | 3 | Including `state.db*` in vault mirror | 43MB+ binary blob; useless in vault. Always exclude. |
-| 4 | rsyncing `~/.hermes/.env` to vault | May contain interactive prompts / auth material; exclude. |
+| 4 | rsyncing `~/.hermes/.env` to vault | If `security.redact_secrets: true` (vault config), exclude. If `security.redact_secrets: false` (this vault's current state, `config.yaml:478` — keys always committed per user policy), DO NOT exclude. Today this conflict surfaced as a real loop: rsync scrubbed `.env` + `auth.json` from the mirror, then I had to `git restore` them to honor `redact_secrets: false`. Fix: keep `.env` + `auth.json` OUT of the canonical exclude list, and rely on the pre-commit hook for safety. |
 | 5 | rsyncing `sessions/` or `logs/` to vault | Massive, useless, bloats vault. Exclude. |
 | 6 | Improvising the exclude list on the fly | Use the canonical exclude list below. No ad-hoc additions. |
 | 7 | `rsync --delete` does NOT remove destination directories whose source path is absent (verified 2026-06-06) | `rsync --delete` only deletes individual files in the destination that have no source counterpart. It does NOT remove a destination DIRECTORY whose source directory is gone. Concretely: deleting `~/.hermes/profiles/maartenwriter/` and then running `rsync -av --delete ~/.hermes/ <vault>/05 - AI/99 - Hermes/` leaves the mirror's `05 - AI/99 - Hermes/profiles/maartenwriter/` directory intact. The fix is a direct `rm -rf` on the mirror path after the rsync, then re-verify with `find`. This applies to any subtree of the mirror, not just `profiles/`. Documented in `hermes-config-management` §"profile-removal-cleanup.md" §"Pitfalls". |
+| 8 | `rsync --delete` DOES remove vault-only FILES not in source (verified 2026-06-06) | Inverse of pitfall 7. The vault mirror contains user-authored docs that don't exist in `~/.hermes/` (e.g. `05 - AI/99 - Hermes/Profile Install Pattern.md`, workflow notes, customer-specific docs). `--delete` will silently remove them. The pre-commit hook only checks 3 critical files (`config.yaml`, `SOUL.md`, `prefill.txt`) — vault-only docs are NOT protected. Before running `rsync -av --delete`, snapshot the mirror's vault-only docs: `cd "<vault>" && git status --short 05-AI/ \| grep '^??' \| awk '{print $2}' \| xargs -I{} echo {} > /tmp/vault-only-files.txt`. After the rsync, `git restore` any of those that disappeared, OR add them to the canonical exclude list (preferred). The maartenwriter removal today hit this: `Profile Install Pattern.md` was wiped, restored from HEAD, re-edited for the maartenwriter cleanup, then re-staged. |
 
 ## Canonical exclude list (the only one allowed)
 
@@ -83,11 +84,10 @@ sessions/
 logs/
 hermes-agent/
 venv/
-.env
 .env.pre-revert.*
 ```
 
-No `cron/output/`, no `*.lock`, no exceptions. If the pre-commit hook is too restrictive, edit the hook — do not pass extra flags to the rsync call.
+No `cron/output/`, no `*.lock`, no `.env` (because this vault's `security.redact_secrets: false` — keys are intentional vault content per user policy), no exceptions. If the pre-commit hook is too restrictive, edit the hook — do not pass extra flags to the rsync call.
 
 ## Verified case study (2026-06-06, full)
 

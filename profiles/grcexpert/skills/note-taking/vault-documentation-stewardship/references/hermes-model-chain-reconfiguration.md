@@ -2,13 +2,14 @@
 
 Use this for: switching primary model/provider, adding/removing/reordering fallback providers, converting config-only providers to first-class plugins, or removing provider references from active Hermes/vault docs.
 
-## Current baseline — 2026-06-06
+## Current baseline — 2026-06-07
 
 - Active profiles: `default`, `grcexpert`.
 - Removed profiles: `codereviewer`, `expertcoder` (2026-06-03); `maartenwriter` (2026-06-06).
-- `default` and `grcexpert` primary: `minimax-direct` / `MiniMax-M3`.
-- Current recurring provider plugins: `minimax-direct`, `kimi-coding`, `freellmapi`, `fatman-ollama`. Novita has been removed from the chain.
-- Current policy: recurring custom endpoints use provider plugins and env-var credential resolution; do not reintroduce inline secret-bearing `custom_providers` blocks.
+- `default` and `grcexpert` primary: built-in `minimax` / `MiniMax-M3`. (Was `minimax-direct` until 2026-06-07.)
+- `fallback_providers: []` in both profiles. (Was `kimi-coding → freellmapi → fatman-ollama` until 2026-06-07.)
+- No custom provider plugins on disk. (Were `minimax-direct`, `freellmapi`, `fatman-ollama` until 2026-06-07.)
+- `MINIMAX_API_KEY` in both `~/.hermes/.env` AND `~/.hermes/profiles/grcexpert/.env`.
 
 ## Phase 0 — Plan-first gate
 

@@ -398,7 +398,7 @@ If git history shows a commit by a previous agent (subject starts with "snapshot
 
 ## 9. Coherence checks (run before AND after any primary/fallback edit)
 
-A "primary appears in the fallback chain" config is logically incoherent and the user will read it as a bug. The check is mechanical -- run it as part of the plan, not as a judgment call:
+A "primary appears in the fallback chain" config is logically incoherent and the user will read it as a bug. The check is mechanical -- run it as part of the plan, not as a judgment call: *(As of 2026-06-07, no chains — script still runs cleanly.)*
 
 ```python
 import yaml
@@ -449,6 +449,23 @@ When Maarten says "I want to use model X, find the right slug", the answer is in
 **Why this rule (correction from 2026-06-04):** the user explicitly said "I do not know the kimi-k2.6 slug, this is the model I want to use. The exact slug is for you to investigate and to confirm." Asking the user to confirm a slug the agent can discover in 10 seconds is a token burn and a delegation reversal. The user's role is to state the model they want; the agent's role is to find the right way to address it.
 
 **Do NOT do this rule's job badly:** if the endpoint returns a model that doesn't match what the user asked for (e.g. user said "Kimi K2.6" but `/v1/models` returns only an unrelated `kimi-v1-128k`), surface the mismatch to the user — do not silently substitute.
+
+## 11a. Scope-of-removal pitfall: a "fallback" plugin might BE the primary (added 2026-06-07)
+
+When the user asks to "remove all customizations" / "strip the fallback chain" / "delete the custom provider plugins", DO NOT assume every custom plugin is a fallback. The custom plugin powering the primary (e.g. `minimax-direct` providing `MiniMax-M3` via chat_completions) is structurally a custom plugin, but it IS the primary — removing it breaks the only configured model.
+
+**Verify-before-remove recipe:**
+
+1. **Read** `model.default` + `model.provider` from the current config.
+2. **For each custom provider plugin** under `~/.hermes/plugins/model-providers/<slug>/`, read its `plugin.yaml` to see what `default_aux_model` it provides.
+3. **Cross-reference**: if `model.default` matches the plugin's `default_aux_model`, that plugin is the primary, not a fallback. Do not remove.
+4. **Smoke-test BEFORE removal**: `curl -X POST <plugin's base_url> <auth>` with the live key + `default_aux_model` slug, get a real response body (200 status alone is insufficient — slug-vs-model-id trap).
+5. **For built-in vs custom distinction**: built-in plugins live under `~/.hermes/hermes-agent/plugins/model-providers/<slug>/` and have an `author: Nous Research` line. Custom plugins are under `~/.hermes/plugins/model-providers/<slug>/` (no `author`, agent-added). BUT: switching built-in → custom (or vice versa) often changes wire format (chat_completions vs anthropic_messages) and auth header. Smoke-test the new path before declaring it works.
+6. **Surface the scope conflict to the user** before acting: "This plugin IS your primary. Two ways to read 'remove customization': (a) keep it because it works, drop only the actual fallback plugins, or (b) switch to the built-in equivalent, accepting the wire-format change." Never decide unilaterally.
+
+**Symptom when this rule was missed (verified 2026-06-07):** removed `minimax-direct` (the primary plugin providing `MiniMax-M3` on `/v1` chat_completions) because I was switching to the built-in `minimax` provider on `/anthropic` anthropic_messages. Default profile still worked, but grcexpert returned 401 because the built-in plugin's auth resolution from the grcexpert env was incomplete. Smoke-test on EVERY profile, not just default. The 401 wasn't a key-resolution issue per se; it was that I had not finished validating the swap end-to-end.
+
+**The general principle:** "remove all customizations" requires distinguishing configuration from the thing that makes the configuration work. A custom plugin that IS the primary is not a "customization" in the sense the user means — it is the working implementation. Only surface conflicts the user can resolve in a single decision (built-in vs custom, wire-format accepted or not, etc.).
 
 ## 11. Three-class rule (what gets rsynced and committed — class-level hygiene)
 

@@ -38,22 +38,26 @@ PY
 | `grcexpert` | `grcexpert` | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh grcexpert` | GRC, cybersecurity, NIS2, risk management, compliance, audit, policy authoring |
 | `default` | — | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh default` | General tasks, orchestration, routing, system administration, code tasks when no specialist exists |
 
-**Fallback chains** — read from the same configs above (`fallback_providers` field). Do not cache in documentation.
+**Fallback chains** — read from the same configs above (`fallback_providers` field). Do not cache in documentation. **As of 2026-06-07, `fallback_providers: []` in both profiles (no chains).** Custom provider plugins (`minimax-direct`, `freellmapi`, `fatman-ollama`) were removed 2026-06-07; both profiles now use the built-in `minimax` provider on `MiniMax-M3`. See the case-study references below for historical context only — they are not active behavior.
 
-All profiles use `api_max_retries: 1` for fast failover. Each fallback tier gets a single retry before the chain moves to the next tier.
-
-See `references/model-failover-testing.md` for diagnostic procedures, `references/adding-fallback-providers.md` for the workflow to add or reorder providers in the chain, `references/minimax-direct-provider.md` for the MiniMax direct API setup and key requirements, `references/check-failover-health-script.md` for the **read-only, no-hardcoded-values** contract that the verification script must follow, `references/kimi-failover-wire-mismatch.md` for the **kimi-coding fallback wire-format mismatch** that can cause silent failover failure even when `hermes doctor` is green, `references/kimi-coding-provider-quirks.md` (in `hermes-config-management`) for the full technical breakdown of the plugin/resolver mismatch, `KIMI_BASE_URL` override pitfalls, and the `User-Agent` requirement, and `references/primary-vs-fallback-coherence.md` for the **"primary == last fallback is a broken config"** coherence check and the live-key health sweep that catches dead tiers.
-
-**To smoke-test the entire chain:** run `scripts/test-fallback-chain.sh` — it reads config.yaml, extracts all keys, and tests every tier with curl.
+**To smoke-test the entire chain:** run `scripts/test-fallback-chain.sh` — it reads config.yaml, extracts all keys, and tests every tier with curl. (As of 2026-06-07 there is no chain — this script is dormant.)
 
 **⚠️ Pitfall — profile configs and provider plugins MUST be verified per profile:**
-Profile configs are independent. When adding or renaming a provider in `fallback_providers`, update EVERY profile config (`~/.hermes/profiles/*/config.yaml`) and verify the provider is resolvable from that profile's `HERMES_HOME`. If the provider is represented by a first-class model-provider plugin, make sure the profile can discover that plugin and use the plugin slug consistently (for example `fatman-ollama`, not the old config-only slug `fatman:11434`). Do not reintroduce inline secret-bearing `custom_providers` blocks for recurring endpoints unless the user explicitly requests that older pattern. After any fallback chain change, run a consistency check across all profiles.
+Profile configs are independent. Each profile's `~/.hermes/profiles/<name>/config.yaml` is its own `HERMES_HOME`; the gateway loads `home / .env` per profile (no inheritance from `~/.hermes/.env`). If you add a new profile, copy any provider keys it needs into that profile's `.env` — the `MINIMAX_API_KEY` lives in **both** `~/.hermes/.env` and `~/.hermes/profiles/grcexpert/.env` for that reason. To verify provider discovery from each profile's HERMES_HOME:
+
+```bash
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
+  HERMES_HOME="$home" "$HOME/.hermes/hermes-agent/venv/bin/python" - <<'PY'
+from providers import list_providers
+print(sorted(p.name for p in list_providers()))
+PY
+done
+```
 
 **⚠️ Pitfall — config-file change does NOT change the running session.**
 Editing `~/.hermes/config.yaml` (or any profile's config.yaml) is a DISK change. The gateway process loaded the old config at startup and continues to use it until `hermes gateway restart` is run. The "Model:" and "Provider:" fields in the system prompt show the **gateway's runtime state**, not the file. After any primary model/provider change, ALWAYS run `hermes gateway restart` and confirm with `hermes doctor` and `hermes config get model.default`. The 2026-06-03 session left the user on the old model for one turn because this was missed — the next turn was the first on the new primary. The user explicitly noted: "why are you on kimi-k2? you should be on minimax-m3!!!!! WHAT THE FUCK DID YOU BREAK NOW!!!!!!!!"
 
-**⚠️ Pitfall — primary model MUST NOT appear in the fallback chain (coherence check).**
-If `model.default`/`model.provider` is the SAME as the last entry in `fallback_providers`, the chain is logically broken: the primary has already been tried first, so a fallback to it can only fail. Worse, if the primary is a "last resort" model (e.g. a cheap local Ollama, a free-tier router, an offline stub) and the user sees it in their system prompt, they may think the failover chain is broken when in fact the primary is just not what they expected. Verified case 2026-06-04: default profile had `primary: fatman-ollama/qwen3.6` AND `fallback_providers: [kimi-coding, freellmapi, fatman-ollama]` — fatman-ollama is the local Ollama stub at `http://fatman:11434/v1` and should only ever be a last-resort; the swap was a partial fix that left the chain stale. Always run the coherence check after any primary/fallback edit:
+**⚠️ Pitfall — primary model MUST NOT appear in the fallback chain (coherence check).** *(Historical: no chain as of 2026-06-07 — re-apply if a chain is re-added.)*
 
 ```bash
 python3 - <<'PY'
@@ -75,8 +79,7 @@ PY
 
 If the check prints `❌`, the config is broken: either the duplicate should be removed from the chain, or the primary should be a different model. **This is a G7-class finding — the user noticed it because the session started on a model they considered "last resort" and assumed the chain was failing. The chain was not failing; the primary was just the wrong choice.** See `references/primary-vs-fallback-coherence.md` for the full diagnostic pattern, including how to detect dead keys in the chain (e.g. expired kimi-coding key showing as 401).
 
-**⚠️ Pitfall — dead keys in the fallback chain silently disable tiers.**
-A `kimi-coding` key that has expired or been revoked returns `401 Invalid Authentication` from the API itself — not from the Hermes router. If `kimi-coding` is the FIRST entry in `fallback_providers`, the router will move past it on every failure, but the user will see "fallback activated" log lines and conclude the chain is fine. Reality: tier 1 is dead, the router is wasting a turn + quota on every failover. Verification:
+**⚠️ Pitfall — dead keys in the fallback chain silently disable tiers.** *(Historical: no chain as of 2026-06-07 — re-apply if a chain is re-added.)*
 
 ```bash
 # For each provider in fallback_providers, run a real curl with the actual key

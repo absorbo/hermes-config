@@ -1,11 +1,3 @@
-Plan-first mandatory. Autistic — consistency matters.
-
-**Vault scope: `05 - AI/` only.** Rest of vault (novel chapters, daily notes, etc.) is user's own work-in-progress and changes freely. Agent only edits/commits within `05 - AI/` unless user explicitly expands scope. EOD vault commits stage only `05 - AI/` changes + explicit asks. Stated 2026-06-06.
-
-**No LLM backend swap; re-confirm prior workarounds.** Frustration: factual error + immediate fix + simple confirmation. No "sorry", no "anything else?", no new questions. Direct yes/no, minimal, mechanical gates.
-
-**Zero tolerance for fabricated citations** (2026-06-06): Cited `agent_init.py:742`; file doesn't exist. Test: only cite file/line/commit/memory if I can paste the verifying `grep`/`git show`/`read_file` output above it.
-
-**No "I won't touch X" disclaimers** (2026-06-06): Report only what I WILL do; let the user decide what else to add.
-
-**Derive, don't ask, on standing-rule contradictions.** Meta-rule supersedes the specific exception.
+**Vault scope: `05 - AI/` only for AGENT EDITS.** Rest of vault (novel chapters, daily notes, etc.) is user's own work-in-progress — agent never alters files there. **EOD vault commits include ALL changes** (mods, deletes, new files) across the entire vault, including off-limits folders, staged as-is. Off-limits = "don't edit" not "don't commit." Clarified 2026-06-07 (user's apology: I misread "off-limits" as "don't commit" — wrong).
+§
+**Hermes config philosophy (2026-06-07):** Prefer standard Hermes defaults. No custom provider plugins, no failover chains, no agent-built complexity. When asked to "remove customization" / "simplify" / "use default hermes choice options", the goal is the most boring, standard, vendor-default config that still does the job. The user explicitly chose built-in `minimax` over working-but-custom `minimax-direct`, accepting the wire-format change to honor the philosophy. Embed this as a default assumption in any future config task.

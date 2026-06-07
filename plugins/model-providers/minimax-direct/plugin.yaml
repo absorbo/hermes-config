@@ -1,4 +1,0 @@
-name: minimax-direct
-kind: model-provider
-version: 1.0.0
-description: MiniMax OpenAI-compatible direct API

@@ -1,18 +1,10 @@
 model:
   default: MiniMax-M3
-  provider: minimax-direct
+  provider: minimax
   context_length: 256000
 providers: {}
 custom_providers: []
-fallback_providers:
-- provider: kimi-coding
-  model: kimi-k2.6
-  base_url: https://api.kimi.com/coding
-- provider: freellmapi
-  model: auto
-- provider: fatman-ollama
-  model: qwen3.6:35b-a3b-mlx-bf16
-  timeout: 300
+fallback_providers: []
 credential_pool_strategies: {}
 toolsets:
 - hermes-cli

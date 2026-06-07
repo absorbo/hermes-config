@@ -1,4 +1,0 @@
-name: fatman-ollama
-kind: model-provider
-version: 1.0.0
-description: Ollama/OpenAI-compatible endpoint on fatman:11434

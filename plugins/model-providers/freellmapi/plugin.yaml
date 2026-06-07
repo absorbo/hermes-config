@@ -1,4 +1,0 @@
-name: freellmapi
-kind: model-provider
-version: 1.0.0
-description: Local OpenAI-compatible FreeLLM API gateway
