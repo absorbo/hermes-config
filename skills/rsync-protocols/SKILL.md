@@ -70,6 +70,7 @@ If you think you need to rsync between the two repos, you don't. Either:
 | 4 | rsyncing `~/.hermes/.env` to vault | May contain interactive prompts / auth material; exclude. |
 | 5 | rsyncing `sessions/` or `logs/` to vault | Massive, useless, bloats vault. Exclude. |
 | 6 | Improvising the exclude list on the fly | Use the canonical exclude list below. No ad-hoc additions. |
+| 7 | `rsync --delete` does NOT remove destination directories whose source path is absent (verified 2026-06-06) | `rsync --delete` only deletes individual files in the destination that have no source counterpart. It does NOT remove a destination DIRECTORY whose source directory is gone. Concretely: deleting `~/.hermes/profiles/maartenwriter/` and then running `rsync -av --delete ~/.hermes/ <vault>/05 - AI/99 - Hermes/` leaves the mirror's `05 - AI/99 - Hermes/profiles/maartenwriter/` directory intact. The fix is a direct `rm -rf` on the mirror path after the rsync, then re-verify with `find`. This applies to any subtree of the mirror, not just `profiles/`. Documented in `hermes-config-management` §"profile-removal-cleanup.md" §"Pitfalls". |
 
 ## Canonical exclude list (the only one allowed)
 

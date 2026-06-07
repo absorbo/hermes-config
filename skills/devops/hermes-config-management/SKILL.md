@@ -172,6 +172,51 @@ If the user wants custom endpoints to become first-class providers, create model
 
 When diffing or reconciling, do NOT assume profiles have what the default has. Check each independently.
 
+### 6.2 Tool install parity across profiles (multi-profile Hermes)
+
+When a tool installer writes skills/files to a single profile (almost always the default profile), specialist profiles (e.g. `grcexpert`) do NOT receive the same files automatically. The default profile becomes the only one with the skill; the specialist profiles see `/skill-name` invocations fail with "skill not found" or `^graphify` slash commands being unknown.
+
+**The pattern (verified 2026-06-06 with `graphify install --platform hermes`):**
+
+The graphify installer writes the `graphify/SKILL.md` skill to `~/.hermes/skills/graphify/` (default profile) only. Specialist profiles need a manual `cp -R`:
+
+```bash
+# Source: default profile skill dir
+SRC=~/.hermes/skills/<tool>
+
+# Destinations: every specialist profile that uses <tool>
+for prof in ~/.hermes/profiles/*/; do
+  DST="${prof}skills/<tool>"
+  cp -R "$SRC" "$DST"
+  echo "Copied to $DST"
+done
+```
+
+**Verify parity** before declaring done:
+
+```bash
+diff -r ~/.hermes/skills/<tool> ~/.hermes/profiles/<prof>/skills/<tool>
+# Expected: no output (identical trees)
+```
+
+If `diff` shows differences, the source skill was updated after the copy — re-run the `cp -R` and re-verify.
+
+**Decision tree (when to use this pattern):**
+
+```
+Did the tool's installer target only the default profile?
+├── No  → the installer handled all profiles; no manual copy needed
+└── Yes → does the user have specialist profiles that need this tool?
+          ├── No  → no copy needed
+          └── Yes → manual `cp -R` for each specialist profile
+```
+
+**Why this rule exists:** an agent installed `graphifyy[all]` via `uv tool install` and ran `graphify install --platform hermes`, which wrote the skill to the default profile only. The user then discovered that `^graphify` in `grcexpert` produced "skill not found" because `grcexpert`'s own skills/ directory had no `graphify/` subdir. The manual `cp -R` for each specialist profile is the only fix; the installer has no `--all-profiles` flag.
+
+**Companion: when a tool ships with its own installer that targets a profile, prefer that over manual copy** (e.g., `hermes skills install <name>` reads from the skills registry and writes to the right profile). The `cp -R` pattern is for the gap where the installer's "platform integration" only writes to default.
+
+**Cross-reference:** `graphify/references/add-watch.md` "Cross-profile installation" section captures the same pattern from the tool's side; `cron-pipeline/references/portable-cron-script-pattern.md` captures the cron-script parity concern (vault source + 2-line wrapper + portable lock apply per-profile too).
+
 ## 7. Plan-First for destructive config ops
 
 For multi-file destructive config operations (e.g., "remove all references to provider X"):

@@ -2,7 +2,7 @@
 
 ## Current configuration
 
-Active profiles are `default`, `grcexpert`, and `maartenwriter`. **Read the live configs for exact current values — do not duplicate here.**
+Active profiles are `default` and `grcexpert`. **Read the live configs for exact current values — do not duplicate here.**
 
 ```bash
 python3 - <<'PY'
@@ -27,7 +27,7 @@ hermes chat -q "Say ok" --model <fallback_model> --provider <fallback_provider> 
 ## Provider-plugin discovery check
 
 ```bash
-for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert" "$HOME/.hermes/profiles/maartenwriter"; do
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
   HERMES_HOME="$home" "$HOME/.hermes/hermes-agent/venv/bin/python" - <<'PY'
 from providers import list_providers
 names = {getattr(p, 'name', p) for p in list_providers()}

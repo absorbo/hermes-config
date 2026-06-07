@@ -19,7 +19,7 @@ tags:
 
 ## Current Profile Landscape
 
-**Verified 2026-06-03:** only two specialist profile directories remain under `~/.hermes/profiles/`: `grcexpert` and `maartenwriter`. The `codereviewer` and `expertcoder` profiles were removed via the Hermes dashboard. Code review and coding tasks currently fall back to the default orchestrator unless a new specialist profile is created.
+**Verified 2026-06-06:** only one specialist profile directory remains under `~/.hermes/profiles/`: `grcexpert`. The `maartenwriter`, `codereviewer`, and `expertcoder` profiles were removed. Code review, creative writing, and coding tasks currently fall back to the default orchestrator unless a new specialist profile is created.
 
 **Current models and providers** — read from live configs, do NOT duplicate here:
 
@@ -36,7 +36,6 @@ PY
 | Profile | Alias | Skills | Specialization |
 |---------|-------|--------|---------------|
 | `grcexpert` | `grcexpert` | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh grcexpert` | GRC, cybersecurity, NIS2, risk management, compliance, audit, policy authoring |
-| `maartenwriter` | `maartenwriter` | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh maartenwriter` | Creative writing, novel chapters, continuity, editing, humanizing, narrative |
 | `default` | — | run `~/.hermes/skills/autonomous-ai-agents/profile-routing/scripts/count-skills.sh default` | General tasks, orchestration, routing, system administration, code tasks when no specialist exists |
 
 **Fallback chains** — read from the same configs above (`fallback_providers` field). Do not cache in documentation.
@@ -153,30 +152,6 @@ For complex multi-step GRC tasks, use terminal spawn:
 terminal(command="hermes --profile grcexpert chat -q '<self-contained prompt>'", timeout=300)
 ```
 
-### → maartenwriter (model/provider read from config — see command above)
-
-**ALWAYS delegate when the task involves:**
-
-- Creative writing: novel chapters, scenes, dialogue, narrative prose
-- Continuity tracking, character development, plot structuring
-- Editing for voice, tone, and style (not technical editing)
-- Humanizing AI-generated text into natural prose — **always load the `avoid-ai-writing` skill** for AI-ism detection and removal
-- Writing in specific literary styles or authorial voices
-- Any task in a creative writing vault workspace
-- Story outlining, worldbuilding, character bios
-- Translation with stylistic intent (not just literal)
-
-**Delegation method:**
-```
-delegate_task(
-    goal="<specific writing task>",
-    context="<vault paths, style guides, continuity notes, character references>",
-    model="<profile's model — read from config>",
-    provider="<profile's provider — read from config>",
-    toolsets=["terminal", "file", "web", "search", "skills", "obsidian", "note-taking"]
-)
-```
-
 ### → default (handle directly)
 
 Only handle directly when the task is:
@@ -190,10 +165,8 @@ Only handle directly when the task is:
 ## Anti-Patterns — NEVER Do These
 
 1. **NEVER write cybersecurity policy directly** — delegate to grcexpert
-2. **NEVER write creative prose/chapters directly** — delegate to maartenwriter
-3. **NEVER do GRC gap analysis directly** — delegate to grcexpert
-4. **NEVER edit creative writing for style/voice directly** — delegate to maartenwriter
-5. **NEVER say "I can handle this" when a specialist profile exists** — DELEGATE
+2. **NEVER do GRC gap analysis directly** — delegate to grcexpert
+3. **NEVER say "I can handle this" when a specialist profile exists** — DELEGATE
 
 ## Delegation Mechanism Reference
 

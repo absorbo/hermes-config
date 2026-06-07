@@ -40,7 +40,7 @@ The MiniMax direct API (`api.minimax.io/v1`) requires a real MiniMax API key in 
 
 ```bash
 # Provider discovery from default and profile homes
-for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert" "$HOME/.hermes/profiles/maartenwriter"; do
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
   HERMES_HOME="$home" "$HOME/.hermes/hermes-agent/venv/bin/python" - <<'PY'
 from providers import get_provider_profile
 p = get_provider_profile('minimax-direct')

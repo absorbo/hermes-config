@@ -12,7 +12,7 @@
 ### 1. Verify provider discovery
 
 ```bash
-for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert" "$HOME/.hermes/profiles/maartenwriter"; do
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
   HERMES_HOME="$home" "$HOME/.hermes/hermes-agent/venv/bin/python" - <<'PY'
 from providers import list_providers
 print(sorted(list_providers()))

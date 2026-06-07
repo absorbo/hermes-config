@@ -2,12 +2,11 @@
 
 Use this for: switching primary model/provider, adding/removing/reordering fallback providers, converting config-only providers to first-class plugins, or removing provider references from active Hermes/vault docs.
 
-## Current baseline — 2026-06-03
+## Current baseline — 2026-06-06
 
-- Active profiles: `default`, `grcexpert`, `maartenwriter`.
-- Removed profiles: `codereviewer`, `expertcoder`.
+- Active profiles: `default`, `grcexpert`.
+- Removed profiles: `codereviewer`, `expertcoder` (2026-06-03); `maartenwriter` (2026-06-06).
 - `default` and `grcexpert` primary: `minimax-direct` / `MiniMax-M3`.
-- `maartenwriter` primary: `kimi-coding` / `moonshotai/kimi-k2.6`.
 - Current recurring provider plugins: `minimax-direct`, `kimi-coding`, `freellmapi`, `fatman-ollama`. Novita has been removed from the chain.
 - Current policy: recurring custom endpoints use provider plugins and env-var credential resolution; do not reintroduce inline secret-bearing `custom_providers` blocks.
 
@@ -60,7 +59,7 @@ PY
 Provider plugin discovery check:
 
 ```bash
-for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert" "$HOME/.hermes/profiles/maartenwriter"; do
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
   HERMES_HOME="$home" "$HOME/.hermes/hermes-agent/venv/bin/python" - <<'PY'
 from providers import list_providers
 names = {getattr(p, 'name', p) for p in list_providers()}

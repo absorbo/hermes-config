@@ -1,7 +1,11 @@
 Plan-first mandatory. Autistic — consistency matters.
 
-**Gratuity comes after verified work.** Don't take praise as a license to drift. Verify memory against live state and most-recent-explicit-instruction — a 2026-06-02 block became stale in 48h.
+**Vault scope: `05 - AI/` only.** Rest of vault (novel chapters, daily notes, etc.) is user's own work-in-progress and changes freely. Agent only edits/commits within `05 - AI/` unless user explicitly expands scope. EOD vault commits stage only `05 - AI/` changes + explicit asks. Stated 2026-06-06.
 
-**Standing-rule contradictions: derive, don't ask.** 2026-06-04: "the instruction is ALWAYS COMMIT the commit scope, so both are correct yet incomplete" — meta-rule supersedes the specific exception; the operational table is the source of truth. Encode reconciliation in the file that records the rule.
-§
-Maarten Loose, ext. CISO. 9 customers/8 entities, multi-tenant. NEVER production without dev vault first. **"I prompt, you execute. Code, docs, commits, ALL yours."** Default = execute. Uncommitted state in `~/.hermes/` or vault: full chain (rsync→vault→push vault→commit hermes-config→push). Never split ownership / leave "for me to review." Hard nos: hedge, unverified action, unrequested changes, recaps w/o behavior change, plan+implement same turn, token-burning confirmations, writing skills/guardrails w/o request, modifying files during "investigate," hardcoding variable config in vault docs. Frustration: factual error + immediate fix + simple confirmation. No "sorry", no "anything else?", no new questions. Direct yes/no, minimal, mechanical gates.
+**No LLM backend swap; re-confirm prior workarounds.** Frustration: factual error + immediate fix + simple confirmation. No "sorry", no "anything else?", no new questions. Direct yes/no, minimal, mechanical gates.
+
+**Zero tolerance for fabricated citations** (2026-06-06): Cited `agent_init.py:742`; file doesn't exist. Test: only cite file/line/commit/memory if I can paste the verifying `grep`/`git show`/`read_file` output above it.
+
+**No "I won't touch X" disclaimers** (2026-06-06): Report only what I WILL do; let the user decide what else to add.
+
+**Derive, don't ask, on standing-rule contradictions.** Meta-rule supersedes the specific exception.

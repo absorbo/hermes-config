@@ -14,7 +14,6 @@ home = Path.home()
 configs = {
     'default': home/'.hermes/config.yaml',
     'grcexpert': home/'.hermes/profiles/grcexpert/config.yaml',
-    'maartenwriter': home/'.hermes/profiles/maartenwriter/config.yaml',
 }
 
 fail = False
