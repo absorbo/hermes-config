@@ -395,6 +395,7 @@ If git history shows a commit by a previous agent (subject starts with "snapshot
 - `references/kimi-coding-provider-quirks.md` — bundled `kimi-coding` plugin vs runtime resolver mismatch: the plugin declares `api.moonshot.ai/v1` but `sk-kimi-*` keys auto-route to `api.kimi.com/coding` (Anthropic Messages wire). Covers failover behavior, `KIMI_BASE_URL` override pitfalls, and the `User-Agent` requirement.
 - `references/2026-06-03-mechanical-guard-policy-refactor.md` — policy-class refactor follow-up: replaced explicit block-list sprawl with `policy.yaml`, added `node_modules/` to mirror/runtime cleanup, and verified vault-first/Hermes-second push after Git HTTPS auth recovery.
 - `references/2026-06-04-g7-primary-fallback-coherence.md` — **G7 case study**: "primary == last fallback is a broken config" coherence check. The coherence check script is also embedded in the `profile-routing` skill as an inline pitfall. Covers the slug-vs-model-id trap (kimi `moonshotai/kimi-k2.6` returns 200 with auth-fail body on the real Kimi endpoint because that endpoint only exposes `kimi-for-coding` as model ID), and the "always smoke-test after a swap" requirement. **Read this before any primary/fallback edit, every time.**
+- `references/provider-removal-2026-06-07.md` — session detail for the "remove all customizations, switch to standard Hermes defaults" task. Covers the per-profile `.env` no-inheritance gotcha, the wire-format change between custom and built-in providers, the slug-vs-model-id trap, the user-style pitfalls (`execution-discipline` 2aa / 2ab) that bit this session, and the consolidated verification recipe. **Read this before any provider-chain simplification.**
 
 ## 9. Coherence checks (run before AND after any primary/fallback edit)
 
@@ -466,6 +467,56 @@ When the user asks to "remove all customizations" / "strip the fallback chain" /
 **Symptom when this rule was missed (verified 2026-06-07):** removed `minimax-direct` (the primary plugin providing `MiniMax-M3` on `/v1` chat_completions) because I was switching to the built-in `minimax` provider on `/anthropic` anthropic_messages. Default profile still worked, but grcexpert returned 401 because the built-in plugin's auth resolution from the grcexpert env was incomplete. Smoke-test on EVERY profile, not just default. The 401 wasn't a key-resolution issue per se; it was that I had not finished validating the swap end-to-end.
 
 **The general principle:** "remove all customizations" requires distinguishing configuration from the thing that makes the configuration work. A custom plugin that IS the primary is not a "customization" in the sense the user means — it is the working implementation. Only surface conflicts the user can resolve in a single decision (built-in vs custom, wire-format accepted or not, etc.).
+
+## 11b. User-style pitfall: don't re-ask the decision after it's been delegated (added 2026-06-07)
+
+When the user says "switch to built-in, remove all 3 custom plugins, accept the wire-format change," the user has delegated the entire decision. The mechanical pattern is:
+
+- **One** decision point: "is `minimax-direct` the primary or a fallback?" — verify, then act.
+- If the user has already said "do it, accept the trade-off," there is no second decision. Even if a 4-option matrix feels reasonable ("keep the working one / switch to built-in / keep all on disk harmless / I'll specify"), presenting it is post-decision re-litigation. The user already picked. Execute.
+- See `execution-discipline` 2aa for the canonical failure-mode writeup. The class-level rule: 4-option decision matrices are for cases where the user explicitly delegated the sub-decision ("pick the safest option"). They are NOT for cases where the user already picked the path.
+
+**Demoed 2026-06-07:** user said *"switch to built-in minimax primary, no fallovers"* — the user delegated (1) which built-in, (2) whether to remove the custom plugin, (3) what to do with the wire-format change. The agent presented a 4-option clarify anyway, asking which of (A/B/C/D) the user wanted. The user replied *"I want what I asked, nothing more, nothing less. Why are you asking this question? Do as instructed, like I always remind you!"* — the second pushback in the same turn after the agent had tried once more to verify the choice. **The fix:** when the user's instruction ends with "do as instructed" / "I don't care about side-effects" / "just do it" / "accept the trade-off" / "default hermes options" — they've delegated. One question at most, only if there is a true ambiguity the user must resolve.
+
+## 6.3 Per-profile `.env` files have no inheritance (added 2026-06-07)
+
+The Hermes gateway loads `home / .env` per profile — there is no inheritance from `~/.hermes/.env` to `~/.hermes/profiles/<name>/.env`. Each profile's `.env` is independent.
+
+**Symptom when this is missed (verified 2026-06-07):** switched default + grcexpert to a provider that resolves its API key from `MINIMAX_API_KEY` (the same var name in both env files). Default profile worked end-to-end. grcexpert returned `401 — please carry the API secret key in the 'X-Api-Key' field.` The curl probe with the grcexpert's effective env (which had no `MINIMAX_API_KEY`) confirmed: the key was simply not loaded.
+
+**The fix:** when a new profile is added OR when a new provider is wired into an existing profile, copy the relevant API-key env vars into that profile's `.env`. Do not assume the default `.env` will be picked up. The per-profile env-var audit is mechanical:
+
+```bash
+# For each profile, show which provider-key env vars are loaded
+for home in "$HOME/.hermes" "$HOME/.hermes/profiles/grcexpert"; do
+  echo "=== $home ==="
+  grep -E "^[A-Z_]+_API_KEY|^[A-Z_]+_BASE_URL" "$home/.env" 2>/dev/null | sed 's/=.*$/=<set>/' | sort
+done
+```
+
+If two profiles have different key sets and they should both reach the same provider, the missing lines need to be copied from one to the other.
+
+**Why this rule is separate from §6 (profile configs are independent):** §6 covers `config.yaml` (model block, fallback chain, etc.). §6.3 covers the secret-bearing `.env` files. The two are independent — a profile can have a correct `config.yaml` pointing at a provider and still 401 because the key is in the wrong `.env`.
+
+## 6.4 Smoke-test with body content, not just 200 (added 2026-06-07)
+
+A 200 HTTP status from a provider endpoint is NOT sufficient evidence the model+slug combination works. The "slug-vs-model-id trap" returns 200 with an auth-fail body or empty completion body when the model ID is wrong but the endpoint is reachable.
+
+**The correct smoke-test (verified 2026-06-07):**
+
+```bash
+# Default profile
+hermes chat -q "Reply with exactly: SMOKE_OK" 2>&1 | tail -3
+
+# Specialist profile
+hermes --profile grcexpert chat -q "Reply with exactly: SMOKE_OK" 2>&1 | tail -3
+```
+
+Both should return the literal `SMOKE_OK` in the response body. **A 200 with no body content is the slug-vs-model-id trap.** A 401 is the env-file inheritance issue (§6.3). A 200 with `SMOKE_OK` is the only success signal.
+
+**The 200-only test is the most common verification failure in this skill** — agents report "smoke test passed" because `curl -s -o /dev/null -w "%{http_code}"` returned 200, when in fact the model ID was wrong and the actual model call would fail. Always run the chat CLI and verify the body.
+
+**Why this lives here (not just in §9 / §10):** the "before AND after any primary/fallback edit" §9 coherence check is for config-structure. §10 is for finding the right slug. §6.4 is for VERIFYING the wire end-to-end after you've made the change. The three together form a complete verification stack: structure (§9), slug (§10), end-to-end (§6.4).
 
 ## 11. Three-class rule (what gets rsynced and committed — class-level hygiene)
 
