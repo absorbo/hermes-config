@@ -1,2 +1,3 @@
 context_lengths:
+  anthropic/claude-opus-4.8@https://inference-api.nousresearch.com/v1: 1000000
   qwen3.6:35b-a3b-mlx-bf16@http://fatman:11434/v1/: 262144

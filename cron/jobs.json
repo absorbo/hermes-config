@@ -23,15 +23,15 @@
       "schedule_display": "0 3 * * *",
       "repeat": {
         "times": null,
-        "completed": 20
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:04:57.939236+02:00",
-      "next_run_at": "2026-06-08T03:00:00+02:00",
-      "last_run_at": "2026-06-07T03:07:01.387237+02:00",
+      "next_run_at": "2026-06-09T03:00:00+02:00",
+      "last_run_at": "2026-06-08T03:02:58.843339+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -69,15 +69,15 @@
       "schedule_display": "0 4 * * *",
       "repeat": {
         "times": null,
-        "completed": 21
+        "completed": 22
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:04:59.961987+02:00",
-      "next_run_at": "2026-06-08T04:00:00+02:00",
-      "last_run_at": "2026-06-07T04:04:08.668562+02:00",
+      "next_run_at": "2026-06-09T04:00:00+02:00",
+      "last_run_at": "2026-06-08T04:02:21.139889+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -114,15 +114,15 @@
       "schedule_display": "0 9 * * *",
       "repeat": {
         "times": null,
-        "completed": 20
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:18.765381+02:00",
-      "next_run_at": "2026-06-08T09:00:00+02:00",
-      "last_run_at": "2026-06-07T09:02:11.775952+02:00",
+      "next_run_at": "2026-06-09T09:00:00+02:00",
+      "last_run_at": "2026-06-08T09:01:00.734404+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -201,17 +201,17 @@
       "schedule_display": "20 6 * * *",
       "repeat": {
         "times": null,
-        "completed": 20
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:44.015404+02:00",
-      "next_run_at": "2026-06-08T06:20:00+02:00",
-      "last_run_at": "2026-06-07T06:23:05.295210+02:00",
-      "last_status": "error",
-      "last_error": "Script timed out after 120s: /Users/absorbo/.hermes/scripts/workflow_backlink_curator_cron.sh",
+      "next_run_at": "2026-06-09T06:20:00+02:00",
+      "last_run_at": "2026-06-08T06:20:47.041205+02:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": null,
@@ -243,15 +243,15 @@
       "schedule_display": "0 17 * * *",
       "repeat": {
         "times": null,
-        "completed": 19
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:45.022995+02:00",
-      "next_run_at": "2026-06-07T17:00:00+02:00",
-      "last_run_at": "2026-06-03T17:20:24.404302+02:00",
+      "next_run_at": "2026-06-09T17:00:00+02:00",
+      "last_run_at": "2026-06-08T17:02:14.904844+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -287,15 +287,15 @@
       "schedule_display": "15 17 * * *",
       "repeat": {
         "times": null,
-        "completed": 19
+        "completed": 21
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-16T11:05:46.029675+02:00",
-      "next_run_at": "2026-06-07T17:15:00+02:00",
-      "last_run_at": "2026-06-03T17:21:36.352362+02:00",
+      "next_run_at": "2026-06-09T17:15:00+02:00",
+      "last_run_at": "2026-06-08T17:18:28.350962+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -311,7 +311,7 @@
     {
       "id": "7eef85853197",
       "name": "Invoice & Payment Tracker",
-      "prompt": "Run the weekly invoice and payment tracker for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nImportant paths:\n- Entities: `11 - Entities/`\n- M365 script: `/Users/absorbo/.hermes/skills/productivity/m365-graph/scripts/m365_graph_mail.py`\n- Gmail script: `/Users/absorbo/.hermes/skills/productivity/google-workspace/scripts/google_api.py`\n- Python: `/Users/absorbo/.hermes/hermes-agent/venv/bin/python3`\n\nTasks:\n1. Identify ALL entities:\n   - List all folders in `11 - Entities/`.\n   - Read each `00-Overview.md`.\n   - Track ALL entities \u2014 Active and Dormant. Dormant entities have recurring admin obligations (annual filings, tax returns, registrations) that generate invoices.\n   - Return the full entity list with status noted.\n\n2. For each entity, search M365 mailbox (ALL folders: Inbox, Sent Items, and any subfolder \u2014 invoices may be auto-routed) for ALL invoice-related emails:\n   - Dutch: \"factuur\", \"rekening\", \"betalingsachterstand\", \"aanmaning\", \"onbetaalde\", \"openstaande\", \"betaling\"\n   - English: \"invoice\", \"payment\", \"statement\", \"due\", \"overdue\", \"reminder\", \"collection\", \"outstanding\", \"receipt\"\n   - Goal: catch ALL incoming invoices, not just overdue ones \u2014 so payments can be made on time.\n   - Extract: sender, amount, due date, reference number, date received.\n\n3. For each entity, search Gmail (ALL folders \u2014 invoices may be auto-routed) using the same terms.\n\n4. For each email with attachments:\n   - Download PDF/image attachments (invoices are often PDFs).\n   - Extract text from PDFs using `pymupdf` or the `ocr-and-documents` skill.\n   - Scan extracted text for: invoice number, amount, due date, IBAN/BBAN, structured communication (+++...+++), sender details.\n   - Add extracted invoice data to the tracking list.\n   - Delete the downloaded PDF immediately after extraction \u2014 DO NOT leave clutter.\n\n5. For each found invoice/reminder, cross-reference sent items:\n   - M365 sent: has Maarten already replied?\n   - Gmail sent: same check.\n   - Mark each as \"Responded\" or \"Awaiting Response\".\n\n6. For each entity, compile per-entity invoice status:\n   - Calculate days overdue (today - due date).\n   - Flag unresolved > 7 days.\n   - New invoices this week \u2192 highlight.\n\n7. Create/update `11 - Entities/<name>/Payment Calendar.md` for each entity:\n   - Table: Date | Sender | Reference | Amount | Due Date | Status (Paid/Open/Overdue) | Days Overdue | Response Status\n   - Running total: sum of all open amounts.\n   - Monthly outgoing sum: total per calendar month.\n   - Balance section: total paid vs total open.\n   - Include ALL payment details \u2014 invoices, amounts, dates, references, senders \u2014 so no time is lost looking up details.\n\n8. Report summary:\n   - Per entity: count of open invoices, total open amount, oldest overdue, unresolved count.\n   - Global: total open across all entities.\n   - Flagged: entities with unresolved > 7 days.\n\nConstraints: never delete files; never delete email; never send email; never modify templates or archives; never fabricate amounts or dates; preserve existing payment calendar data \u2014 only add/update, never overwrite manually entered information.\n\nOperational gate: Before changing anything: read relevant vault documentation and current target files, form a brief plan, then act and verify. Do not act first and check later.\nFinal output: concise status only (changed/created/updated counts and flagged items). Do not include long evidence dumps unless something needs user attention.",
+      "prompt": "Run the weekly invoice and payment tracker for the Clawbot Obsidian vault at `/Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`.\n\nImportant paths:\n- Entities: `11 - Entities/`\n- M365 script: `/Users/absorbo/.hermes/skills/productivity/m365-graph/scripts/m365_graph_mail.py`\n- Gmail script: `/Users/absorbo/.hermes/skills/productivity/google-workspace/scripts/google_api.py`\n- Python: `/Users/absorbo/.hermes/hermes-agent/venv/bin/python3`\n\nTool-turn budget: 90 turns total. The 2026-06-08 run hit the cap at 14/16 budget, 103 tool turns, and lost the final summary + vault commit. Keep total tool turns under 70 so the report and commit complete cleanly.\n\nTasks:\n1. Identify ALL entities:\n   - List all folders in `11 - Entities/`.\n   - Read each `00-Overview.md`.\n   - Track ALL entities \u2014 Active and Dormant. Dormant entities have recurring admin obligations (annual filings, tax returns, registrations) that generate invoices.\n   - Return the full entity list with status noted.\n\n2. For each entity, search M365 mailbox (ALL folders: Inbox, Sent Items, and any subfolder \u2014 invoices may be auto-routed) for ALL invoice-related emails:\n   - Dutch: \"factuur\", \"rekening\", \"betalingsachterstand\", \"aanmaning\", \"onbetaalde\", \"openstaande\", \"betaling\"\n   - English: \"invoice\", \"payment\", \"statement\", \"due\", \"overdue\", \"reminder\", \"collection\", \"outstanding\", \"receipt\"\n   - Goal: catch ALL incoming invoices, not just overdue ones \u2014 so payments can be made on time.\n   - Extract: sender, amount, due date, reference number, date received.\n\n3. For each entity, search Gmail (ALL folders \u2014 invoices may be auto-routed) using the same terms.\n\n4. For each email with attachments:\n   - Download PDF/image attachments (invoices are often PDFs).\n   - Extract text from PDFs using `pymupdf` or the `ocr-and-documents` skill.\n   - Scan extracted text for: invoice number, amount, due date, IBAN/BBAN, structured communication (+++...+++), sender details.\n   - Add extracted invoice data to the tracking list.\n   - Delete the downloaded PDF immediately after extraction \u2014 DO NOT leave clutter.\n\n5. For each found invoice/reminder, cross-reference sent items:\n   - M365 sent: has Maarten already replied?\n   - Gmail sent: same check.\n   - Mark each as \"Responded\" or \"Awaiting Response\".\n\n6. For each entity, compile per-entity invoice status:\n   - Calculate days overdue (today - due date).\n   - Flag unresolved > 7 days.\n   - New invoices this week \u2192 highlight.\n\n7. EARLY-BAIL RULE (per-entity, runs in parallel with step 6). The 2026-06-08 run spent ~6-8 tool turns per \"no activity\" entity on redundant `skill_manage` / `skills_list` calls. To prevent that:\n   - For each entity, after the email-search + calendar-read step, if the entity has ZERO email hits this week AND the calendar file has no `## Open` / `## Unpaid` / `## Awaiting` section, do NOT call `skill_manage` or `skills_list`. Mark the entity `SKIPPED: no activity` in the report using a SINGLE `search_files` call (one for the calendar, one for the per-entity M365/Gmail hit list if cached). Move on to the next entity.\n   - This rule saves ~6-8 tool turns per \"no activity\" entity (typically 5-7 of the 8 entities). Budget recovered: 30-50 turns.\n\n8. Create/update `11 - Entities/<name>/Payment Calendar.md` for each entity with at least one invoice/activity this week:\n   - Table: Date | Sender | Reference | Amount | Due Date | Status (Paid/Open/Overdue) | Days Overdue | Response Status\n   - Running total: sum of all open amounts.\n   - Monthly outgoing sum: total per calendar month.\n   - Balance section: total paid vs total open.\n   - Include ALL payment details \u2014 invoices, amounts, dates, references, senders \u2014 so no time is lost looking up details.\n   - Preserve existing payment calendar data \u2014 only add/update, never overwrite manually entered information.\n\n9. Report summary:\n   - Per entity: count of open invoices, total open amount, oldest overdue, unresolved count.\n   - Global: total open across all entities.\n   - Flagged: entities with unresolved > 7 days.\n   - Explicitly list entities marked `SKIPPED: no activity` so Maarten can verify the early-bail was correct.\n\n10. VAULT COMMIT (REQUIRED, per SOUL.md \u00a7\"Commit & Backup Gate\"):\n   - If any `Payment Calendar.md` was updated, commit those changes to clawbot-vault (the vault repo). Do this BEFORE writing the final summary in the cron output.\n   - The commit must include only the modified Payment Calendar files (do not stage unrelated vault changes).\n   - If the commit fails, write a `## \u26a0\ufe0f Commit failed` section in the report with the error so Maarten can commit manually.\n\n11. TOOL-TURN WATCHDOG: if at any point your tool-turn counter exceeds 70/90, abandon the per-entity re-verify loop and:\n   - Emit the summary from step 9 with whatever data you have.\n   - Attempt the vault commit from step 10.\n   - Append a `## \u26a0\ufe0f Truncated by tool-iteration cap` section listing which entities were NOT re-verified so Maarten can re-run if needed.\n   - Exit. Do NOT attempt more entity work after the cap warning.\n\nConstraints: never delete files; never delete email; never send email; never modify templates or archives; never fabricate amounts or dates; preserve existing payment calendar data \u2014 only add/update, never overwrite manually entered information.\n\nOperational gate: Before changing anything: read relevant vault documentation and current target files, form a brief plan, then act and verify. Do not act first and check later.\nFinal output: concise status only (changed/created/updated counts and flagged items). Do not include long evidence dumps unless something needs user attention.",
       "skills": [
         "obsidian",
         "obsidian-markdown",
@@ -333,17 +333,17 @@
       "schedule_display": "0 7 * * 1",
       "repeat": {
         "times": null,
-        "completed": 2
+        "completed": 3
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-24T03:25:00.124991+02:00",
-      "next_run_at": "2026-06-08T07:00:00+02:00",
-      "last_run_at": "2026-06-01T07:09:03.140636+02:00",
-      "last_status": "ok",
-      "last_error": null,
+      "next_run_at": "2026-06-15T07:00:00+02:00",
+      "last_run_at": "2026-06-08T07:13:19.691578+02:00",
+      "last_status": "error",
+      "last_error": "RuntimeError: # Weekly Invoice & Payment Tracker \u2014 Status (2026-06-08)\n\n## What Was Accomplished\n\n**Data collection (complete):**\n- 8 entities inventoried (Active + Dormant): TruSecure, TruSecure-UK, Minotaur Solutions, Oxford Holdings, Eldenwyck & Co, Privacy Services LLC, REAT Europe, Loose Maarten CommV\n- M365 + Gmail auth restored (msal installed, symlink created to `/Users/absorbo/Documents/.hermes/.local`)\n- Fetched 100 M365 inbox + 100 M365 sent + 200 Gmail inbox + 100 Gmail sent\n- Filtered to **19 M365 + 7 Gmail** invoice-related hits, fetched 7 priority message bodies\n- Cross-referenced sent items (response status) and daily notes (payment confirmations)\n\n**Files updated:**\n- \u2705 **`Loose Maarten CommV/Payment Calendar.md`** \u2014 major update (frontmatter, status overview, flagged table, 8 new incoming rows, Enwyse payments closed)\n\n## Key Findings\n\n### \ud83c\udd95 NEW invoices this week\n- **WEX BE41140074 \u2014 \u20ac109.08** (due 26/05/2026, **13 days overdue**) \u2014 new WEX invoice, distinct from older BE41127482 \u20ac111.11\n- **AZ Groeninge 1260080735 \u2014 \u20ac7.50** (due 05-07-2026) \u2014 patient invoice, not yet due\n- **Vanheede VF26-066398** \u2014 new waste invoice, amount in portal only\n- **Deelkenspoorten INV24/1862** \u2014 old 2024 tow-truck invoice, Maarten replied 2026-06-02\n- **Bol.com payment reminder** \u2014 amount not in body\n- **Billit/Fidufix** \u2014 2 Peppol deliveries (accountant-related, amount pending)\n- **Billit/Vanheede** \u2014 Peppol duplicate of VF26-066398\n\n### \u2705 Recently paid\n- **Enwyse F-2026020482 (\u20ac581.22)** + **F-2026027153 (\u20ac549.14)** \u2014 both paid 2026-06-06 per daily note + Maarten replied to reminder\n\n### \ud83d\udd34 Unresolved >7 days (flagged)\n1. **Leaseline 12267** \u20ac2,043.68 \u2014 39 days overdue, Maarten replied 2026-05-18, payment pending\n2. **WEX BE41140074** \u20ac109.08 \u2014 13 days overdue, \ud83c\udd95 NEW\n3. **WEX BE41127482** \u20ac111.11 \u2014 37 days overdue (older balance)\n\n## Pending (interrupted by tool-iteration cap)\n\n- Loose Maarten CommV: Running Totals + Notes section update\n- TruSecure Payment Calendar: add NEW Cloudflare domain auto-renewal + Diversus/Billtobox status update\n- 5 other entities: re-verify \"no activity\" status (no change expected, but the \"Last updated\" stamp should be refreshed)\n- Temp file cleanup in `/tmp`\n- Commit to `clawbot-vault` (PRIMARY repo) \u2014 per SOUL.md Commit & Backup Gate, this must happen via the standard vault commit flow (vault first, then hermes-config mirror)\n\n**Total estimated open across all entities: ~\u20ac2,492+ (Loose Maarten CommV dominates \u2014 TruSecure + 5 others have zero confirmed open invoices this run).**",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": null,
@@ -376,15 +376,15 @@
       "schedule_display": "0 6 * * *",
       "repeat": {
         "times": null,
-        "completed": 14
+        "completed": 15
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-24T03:35:24.523468+02:00",
-      "next_run_at": "2026-06-08T06:00:00+02:00",
-      "last_run_at": "2026-06-07T06:04:46.494297+02:00",
+      "next_run_at": "2026-06-09T06:00:00+02:00",
+      "last_run_at": "2026-06-08T06:02:11.998100+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -418,15 +418,15 @@
       "schedule_display": "0 8 * * 1",
       "repeat": {
         "times": null,
-        "completed": 2
+        "completed": 3
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-24T04:17:09.845927+02:00",
-      "next_run_at": "2026-06-08T08:00:00+02:00",
-      "last_run_at": "2026-06-01T08:02:00.418061+02:00",
+      "next_run_at": "2026-06-15T08:00:00+02:00",
+      "last_run_at": "2026-06-08T08:02:53.743320+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -696,15 +696,15 @@
       "schedule_display": "0 9 * * *",
       "repeat": {
         "times": null,
-        "completed": 13
+        "completed": 14
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-05-24T04:18:17.921003+02:00",
-      "next_run_at": "2026-06-08T09:00:00+02:00",
-      "last_run_at": "2026-06-07T09:05:21.021691+02:00",
+      "next_run_at": "2026-06-09T09:00:00+02:00",
+      "last_run_at": "2026-06-08T09:01:13.700599+02:00",
       "last_status": "ok",
       "last_error": null,
       "last_delivery_error": null,
@@ -741,53 +741,15 @@
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-04T09:28:08.462917+00:00",
-      "next_run_at": "2026-06-08T04:00:00+02:00",
-      "last_run_at": "2026-06-07T04:01:10.645635+02:00",
+      "next_run_at": "2026-06-09T04:00:00+02:00",
+      "last_run_at": "2026-06-08T04:00:47.819530+02:00",
       "last_status": "error",
-      "last_error": "Script exited with code 1\nstderr:\nWARN: vault output dir /Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/05 - AI/99 - Hermes/cron/output does not exist\nstdout:\ncron_output_rotate: deleted 4 live + 0 vault files older than 7 days (errors=1)",
+      "last_error": "Script exited with code 1\nstderr:\nWARN: vault output dir /Users/absorbo/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/05 - AI/99 - Hermes/cron/output does not exist\nstdout:\ncron_output_rotate: deleted 8 live + 0 vault files older than 7 days (errors=1)",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": "phase2-audit-2026-06-04",
       "enabled_toolsets": [],
       "workdir": null
-    },
-    {
-      "id": "ee8485f40c09",
-      "name": "Providers Patch Drift Check",
-      "prompt": "noop",
-      "skills": [],
-      "skill": null,
-      "model": null,
-      "provider": null,
-      "base_url": null,
-      "script": "check-providers-patch.sh",
-      "no_agent": true,
-      "context_from": null,
-      "schedule": {
-        "kind": "cron",
-        "expr": "0 2 * * *",
-        "display": "0 2 * * *"
-      },
-      "schedule_display": "0 2 * * *",
-      "repeat": {
-        "times": null,
-        "completed": 1
-      },
-      "enabled": true,
-      "state": "scheduled",
-      "paused_at": null,
-      "paused_reason": null,
-      "created_at": "2026-06-04T18:28:14.439564+02:00",
-      "next_run_at": "2026-06-08T02:00:00+02:00",
-      "last_run_at": "2026-06-07T02:00:53.746309+02:00",
-      "last_status": "ok",
-      "last_error": null,
-      "last_delivery_error": null,
-      "deliver": "local",
-      "origin": null,
-      "enabled_toolsets": null,
-      "workdir": null,
-      "profile": null
     },
     {
       "id": "30df09d5ffd9",
@@ -809,17 +771,17 @@
       "schedule_display": "0 5 * * *",
       "repeat": {
         "times": null,
-        "completed": 1
+        "completed": 2
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-06T14:13:33.527550+02:00",
-      "next_run_at": "2026-06-08T05:00:00+02:00",
-      "last_run_at": "2026-06-07T05:02:38.380397+02:00",
-      "last_status": "error",
-      "last_error": "Script timed out after 120s: /Users/absorbo/.hermes/scripts/graphify_incremental.sh",
+      "next_run_at": "2026-06-09T05:00:00+02:00",
+      "last_run_at": "2026-06-08T05:00:48.633509+02:00",
+      "last_status": "ok",
+      "last_error": null,
       "last_delivery_error": null,
       "deliver": "local",
       "origin": null,
@@ -836,28 +798,28 @@
       "model": null,
       "provider": null,
       "base_url": null,
-      "script": "graphify_weekly_rebuild.sh",
+      "script": "graphify_weekly_cluster.sh",
       "no_agent": true,
       "context_from": null,
       "schedule": {
         "kind": "cron",
-        "expr": "0 5 * * 0",
-        "display": "0 5 * * 0"
+        "expr": "5 5 * * 0",
+        "display": "5 5 * * 0"
       },
-      "schedule_display": "0 5 * * 0",
+      "schedule_display": "5 5 * * 0",
       "repeat": {
         "times": null,
-        "completed": 1
+        "completed": 2
       },
       "enabled": true,
       "state": "scheduled",
       "paused_at": null,
       "paused_reason": null,
       "created_at": "2026-06-06T14:13:34.538301+02:00",
-      "next_run_at": "2026-06-14T05:00:00+02:00",
-      "last_run_at": "2026-06-07T05:02:38.363762+02:00",
+      "next_run_at": "2026-06-14T05:05:00+02:00",
+      "last_run_at": "2026-06-08T18:03:36.565708+02:00",
       "last_status": "error",
-      "last_error": "Script timed out after 120s: /Users/absorbo/.hermes/scripts/graphify_weekly_rebuild.sh",
+      "last_error": "Script exited with code 1",
       "last_delivery_error": null,
       "deliver": "local",
       "origin": null,
@@ -866,5 +828,5 @@
       "profile": null
     }
   ],
-  "updated_at": "2026-06-07T09:05:21.029510+02:00"
+  "updated_at": "2026-06-08T18:46:19.321205+02:00"
 }

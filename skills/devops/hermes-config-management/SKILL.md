@@ -316,6 +316,8 @@ When the user says "rotate the Kimi key," "configure the Moonshot endpoint," or 
 
 **User standing rule (2026-06-06):** *"I do NOT want to re-edit env files manually, I want you to do it via Hermes commands or plugin."* This applies to LLM provider keys, base URLs, model defaults, and any other config that another app watches (e.g. `~/.kimi-code/config.toml`, the kimi-coding plugin resolver, EXA search backend).
 
+**The `hermes config set` path also covers cron-runtime knobs** (added 2026-06-08): `cron.script_timeout_seconds`, `cron.max_parallel_jobs`, `cron.wrap_response` are all set via `hermes config set cron.<key> <value>`. The default is **120s** and is global (NOT per-job). Long-running script-mode jobs (LLM cluster steps, full re-extracts, batch API calls) need this raised: `hermes config set cron.script_timeout_seconds 900` (15 min). The full pattern + verified case study is in `cron-pipeline` pitfall 20. The `hermes` CLI is at `~/.local/bin/hermes` and is NOT on default PATH — either prepend it or use the full path.
+
 **Why this rule exists:**
 
 - Direct `.env` edits can break other apps that watch the file. The user runs both the kimi-coding plugin (watches `~/.hermes/.env` for `KIMI_API_KEY` + `KIMI_BASE_URL`) and the kimi-code CLI (watches `~/.kimi-code/config.toml`). A manual edit to `.env` that adds `MOONSHOT_API_KEY` and a new `MOONSHOT_BASE_URL` can be picked up by the kimi-coding plugin's resolver in a way the user did not intend, silently breaking the Kimi Code path. The user's verbatim complaint: "Why are yu breaking another kimi app now."
@@ -556,6 +558,78 @@ Three concrete failures from the auth.json tracking fix that future sessions wil
 **2. Tracked file under a `.gitignore`'d path requires `git add -f`.** The vault's `.gitignore` has `skills/`, `profiles/`, `plugins/`, and other directory rules. For an UNTRACKED file under those paths, `git add <path>` is correctly refused with "The following paths are ignored by one of your .gitignore files." For an ALREADY-TRACKED file under one of those paths (e.g. `05 - AI/99 - Hermes/skills/devops/hermes-config-management/SKILL.md` is tracked AND lives under the `skills/` rule), `git add` will STILL refuse with the same warning. **Fix:** use `git add -f <path>` to stage a modification to a tracked file whose path matches a `.gitignore` rule. The `-f` is harmless for already-tracked files; it just bypasses the ignore check. (Verified when staging the §11 4-class rule fix in the same turn.)
 
 **3. Mirror staleness is only caught for 3 files.** The vault's pre-commit hook (`<vault>/.git/hooks/pre-commit`) only checks `config.yaml`, `SOUL.md`, and `prefill.txt` for mirror staleness. If you change any OTHER file in `~/.hermes/` (e.g. `auth.json`, a SKILL.md, `.gitignore`), the hook will pass even if the mirror is stale on those. **Implication:** for the 3 critical files, the rsync is mechanically gated. For everything else, the agent is responsible for syncing the mirror before committing — either via canonical rsync (broad) or `cp <src> <mirror>` (surgical). (Verified when committing `auth.json` to vault: hook passed with no critical files in the commit, even though the mirror had a stale `.gitignore` that I fixed inline.)
+
+## 11c. "Give me default state" — the canonical DEFAULT_CONFIG import recipe (added 2026-06-07)
+
+When the user says "remove all customizations" / "default state" / "use standard Hermes options" / "if it's overcomplicated I'll delete you and revert to default myself," the answer is the **literal `DEFAULT_CONFIG` dict from the live hermes-agent source**, not a hand-written "minimal" config. Hand-written minimal configs carry the agent's bias; the canonical dict is the source of truth.
+
+**The recipe (verified 2026-06-07):**
+
+```python
+# Use the hermes-agent venv python — the source python may not have the deps.
+import sys
+sys.path.insert(0, '/Users/absorbo/.hermes/hermes-agent')
+from hermes_cli.config import DEFAULT_CONFIG
+import yaml
+
+cfg = dict(DEFAULT_CONFIG)  # shallow copy; do not mutate the imported dict
+
+# Apply ONLY the user's explicit choice. Nothing else.
+cfg['model'] = {'default': 'MiniMax-M3', 'provider': 'minimax'}
+# Do NOT set: api_max_retries (default 3 is fine), fallback_providers
+# (already []), custom_providers (already absent), any agent.* override
+# that wasn't in the user's instruction.
+
+# Write to all profile configs (identical content; profiles are independent).
+for path in ['/Users/absorbo/.hermes/config.yaml',
+             '/Users/absorbo/.hermes/profiles/grcexpert/config.yaml']:
+    with open(path, 'w') as f:
+        yaml.safe_dump(cfg, f, sort_keys=False, default_flow_style=False, width=120)
+```
+
+**Why this recipe, not a manual edit:**
+
+- A hand-written "minimal config" with 5–10 keys is the wrong default. Hermes has ~60 top-level config sections; the canonical dict has every section with sensible defaults (`terminal`, `web`, `browser`, `checkpoints`, `paste_collapse_*`, `delegation`, `approvals`, `cron`, `kanban`, etc.). Stripping the file to 5 keys and then re-adding 5 missing sections is more work AND more error-prone than importing the source.
+- The canonical dict is what `hermes setup` would produce on a fresh install. Importing it guarantees the on-disk file is byte-for-byte equivalent to a fresh-install state (modulo the user's one override).
+- `DEFAULT_CONFIG` is the same dict the gateway merges on top of a partial config. If a key is missing from the user file, the gateway uses the default. By writing the whole dict, you also make any `diff` against a fresh install trivially small (only the model block differs).
+
+**Pre-flight check (do this BEFORE running the recipe):**
+
+```python
+# Confirm the dict is current
+print("top-level keys:", len(DEFAULT_CONFIG))
+print("_config_version:", DEFAULT_CONFIG.get('_config_version'))
+print("model default:", repr(DEFAULT_CONFIG.get('model')))
+# Expected: 60+ top-level keys, _config_version: 28, model: '' (empty)
+```
+
+If the version number doesn't match `~/.hermes/.skills_prompt_snapshot.json` or `~/.hermes/hermes-agent/__init__.py` references a newer version, the hermes-agent source is out of sync with the runtime. `cd ~/.hermes/hermes-agent && git pull` first, then re-verify.
+
+**Post-write verification (smoke-test BOTH profiles with real completions, not just HTTP 200):**
+
+```bash
+hermes gateway restart
+hermes chat -q "Reply with exactly: SMOKE_OK" 2>&1 | tail -3
+hermes --profile grcexpert chat -q "Reply with exactly: SMOKE_OK" 2>&1 | tail -3
+```
+
+If grcexpert returns 401 but default works, see §6.3 (per-profile `.env` no inheritance — copy the relevant `*_API_KEY` line into `~/.hermes/profiles/<name>/.env`).
+
+**Do NOT use this recipe when:**
+
+- The user wants to keep *some* of the existing customizations and remove *specific* others. The recipe is a full restore; a surgical edit is better in that case. Read §11a first to identify which plugins/sections are customization vs. operational reality.
+- The user has explicitly asked for "the most boring config" without saying "default state" — boring and default are not the same. A boring config is the minimum to do the job; a default config is the canonical dict.
+- The model the user wants to use is NOT available from any bundled provider (i.e., requires a custom plugin). In that case, you must keep the custom plugin and only strip the rest — use §11a as the scope filter, not this recipe.
+
+**Companion:** `references/default-config-restore-recipe.md` has the full copy-pasteable script (pre-flight checks, the import, the write to all profiles, the post-write verification matrix). Use it as a checklist when running the §11c recipe.
+
+**Why §11c is separate from §11a and §11b:**
+
+- §11a: "this plugin might BE the primary, don't blindly remove it" — a *scope filter* for what to remove.
+- §11b: "user delegated the decision, don't re-ask" — a *decision discipline* rule.
+- §11c: "if the user wants default, import the canonical dict verbatim" — the *mechanical recipe* for the actual default restore.
+
+The three together form the canonical "simplify to defaults" workflow: (1) figure out which existing pieces are customization vs. user-chosen (11a), (2) execute without re-litigating (11b), (3) restore to canonical default state for the customization pieces (11c).
 
 ## 12. Cancellation cleanup scope — FOUR places, not one (added 2026-06-05)
 
